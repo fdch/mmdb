@@ -1,0 +1,9 @@
+#N canvas 0 22 450 300 10;
+#X obj 59 157 _array_fill \$2-\$1;
+#X obj 59 75 inlet;
+#X obj 59 97 f \$1;
+#X obj 59 131 text get \$3;
+#X obj 61 210 array define \$2-\$1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 0 0;

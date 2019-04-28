@@ -1,0 +1,503 @@
+#N canvas 1007 20 229 617 10;
+#X declare -path purest_json -path ggee -path ./lib;
+#X obj 28 395 bng 15 250 50 0 write_param_file write_param_file-set
+write_param_file 17 7 0 10 -261234 -1 -1;
+#X symbolatom 28 374 20 0 0 2 write_parameter_filename write_parameter_filename-set
+write_parameter_filename;
+#X obj 28 414 bng 15 250 50 0 make_the_query make_the_query-set make_the_query
+17 7 0 10 -204786 -1 -1;
+#X obj 19 14 cnv 15 190 25 empty empty QUERY_JSON_DATABASE 13 12 0
+14 -203904 -1 0;
+#X symbolatom 28 468 30 0 0 2 read_parameter_file read_parameter_file-set
+read_parameter_file;
+#N canvas 0 22 511 517 parameters 0;
+#X obj 130 109 hsl 128 15 0 127 0 0 thres_R thres_R-set thres_R -2
+8 0 10 -262144 -1 -1 2700 1;
+#X obj 130 129 hsl 128 15 0 127 0 0 thres_G thres_G-set thres_G -2
+8 0 10 -262144 -1 -1 2500 1;
+#X obj 130 149 hsl 128 15 0 127 0 0 thres_B thres_B-set thres_B -2
+8 0 10 -262144 -1 -1 3400 1;
+#X obj 130 169 hsl 128 15 0 127 0 0 thres_C thres_C-set thres_C -2
+8 0 10 -262144 -1 -1 0 1;
+#X obj 130 189 hsl 128 15 0 127 0 0 brightness brightness-set brightness
+-2 8 0 10 -262144 -1 -1 6000 1;
+#X obj 130 209 hsl 128 15 0 127 0 0 bodies bodies-set bodies -2 8 0
+10 -262144 -1 -1 0 1;
+#X obj 130 229 hsl 128 15 0 127 0 0 faces faces-set faces -2 8 0 10
+-262144 -1 -1 0 1;
+#X obj 130 249 hsl 128 15 0 127 0 0 smoothness smoothness-set smoothness
+-2 8 0 10 -262144 -1 -1 0 1;
+#X obj 130 269 hsl 128 15 0 127 0 0 cutness cutness-set cutness -2
+8 0 10 -262144 -1 -1 0 1;
+#X obj 130 289 hsl 128 15 0 127 0 0 blobiness blobiness-set blobiness
+-2 8 0 10 -262144 -1 -1 0 1;
+#X obj 130 309 hsl 128 15 0 127 0 0 skewness skewness-set skewness
+-2 8 0 10 -262144 -1 -1 0 1;
+#X obj 130 329 hsl 128 15 0 127 0 0 boundedness boundedness-set boundedness
+-2 8 0 10 -262144 -1 -1 0 1;
+#X obj 130 349 hsl 128 15 0 127 0 0 kontrastedness kontrastedness-set
+kontrastedness -2 8 0 10 -262144 -1 -1 0 1;
+#X obj 109 109 tgl 15 0 thres_R-bool thres_R-bool-set empty 17 7 0
+10 -262144 -1 -1 0 1;
+#X obj 109 129 tgl 15 0 thres_G-bool thres_G-bool-set empty 17 7 0
+10 -262144 -1 -1 0 1;
+#X obj 109 149 tgl 15 0 thres_B-bool thres_B-bool-set empty 17 7 0
+10 -262144 -1 -1 0 1;
+#X obj 109 169 tgl 15 0 thres_C-bool thres_C-bool-set empty 17 7 0
+10 -262144 -1 -1 0 1;
+#X obj 109 189 tgl 15 0 brightness-bool brightness-bool-set empty 17
+7 0 10 -262144 -1 -1 0 1;
+#X obj 109 209 tgl 15 0 bodies-bool bodies-bool-set empty 17 7 0 10
+-262144 -1 -1 0 1;
+#X obj 109 229 tgl 15 0 faces-bool faces-bool-set empty 17 7 0 10 -262144
+-1 -1 0 1;
+#X obj 109 249 tgl 15 0 smoothness-bool smoothness-bool-set empty 17
+7 0 10 -262144 -1 -1 0 1;
+#X obj 109 269 tgl 15 0 cutness-bool cutness-bool-set empty 17 7 0
+10 -262144 -1 -1 0 1;
+#X obj 109 289 tgl 15 0 blobiness-bool blobiness-bool-set empty 17
+7 0 10 -262144 -1 -1 0 1;
+#X obj 109 309 tgl 15 0 skewness-bool skewness-bool-set empty 17 7
+0 10 -262144 -1 -1 0 1;
+#X obj 109 329 tgl 15 0 boundedness-bool boundedness-bool-set empty
+17 7 0 10 -262144 -1 -1 0 1;
+#X obj 109 349 tgl 15 0 kontrastedness-bool kontrastedness-bool-set
+empty 17 7 0 10 -262144 -1 -1 0 1;
+#X obj 130 368 hsl 128 10 0 127 0 0 global global-set global -2 5 0
+10 -262144 -1 -1 0 1;
+#X obj 114 368 tgl 10 0 global-bool global-bool-set empty 17 7 0 10
+-262144 -1 -1 0 1;
+#X coords 0 -1 1 1 169 284 2 100 100;
+#X restore 29 45 pd parameters;
+#X obj 29 435 bng 15 250 50 0 default default-set default_params 17
+7 0 10 -262144 -1 -1;
+#X symbolatom 28 345 10 0 0 2 source_dataset_basename source_dataset_basename-set
+source_dataset_basename;
+#N canvas 536 58 455 326 guts 0;
+#X obj 38 16 declare -path purest_json -path ggee -path ./lib;
+#X obj 248 106 array define \$0-union;
+#X obj 248 126 array define \$0-inter;
+#N canvas 350 228 497 438 netsend 0;
+#X msg 288 310 connect localhost 3004;
+#X obj 273 335 netsend;
+#X msg 273 58 send gemwin \$1;
+#X obj 175 210 f;
+#X obj 203 211 + 1;
+#X obj 175 232 mod;
+#X obj 288 290 r connect;
+#X obj 246 7 r play;
+#X obj 178 37 metro 80;
+#X obj 246 30 t f f;
+#X obj 273 357 print netsend;
+#X obj 54 95 sel 0 1;
+#X obj 175 254 tabread;
+#X obj 87 190 array size;
+#X obj 69 120 list append \$0-inter;
+#X obj 58 142 list append \$0-union;
+#X obj 58 166 t a b a;
+#X msg 59 213 set \$1;
+#X obj 54 47 f;
+#X obj 68 26 r choose_type;
+#X obj 54 68 change;
+#X obj 177 64 t b b;
+#X obj 229 241 r index;
+#X msg 175 274 send index \$1 \; index-set set \$1;
+#X connect 0 0 1 0;
+#X connect 1 0 10 0;
+#X connect 2 0 1 0;
+#X connect 3 0 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 1;
+#X connect 5 0 12 0;
+#X connect 6 0 0 0;
+#X connect 7 0 9 0;
+#X connect 8 0 21 0;
+#X connect 9 0 8 0;
+#X connect 9 1 2 0;
+#X connect 11 0 15 0;
+#X connect 11 1 14 0;
+#X connect 12 0 23 0;
+#X connect 13 0 5 1;
+#X connect 14 0 16 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 16 1 13 0;
+#X connect 16 2 13 1;
+#X connect 17 0 12 0;
+#X connect 18 0 20 0;
+#X connect 19 0 18 1;
+#X connect 20 0 11 0;
+#X connect 21 0 3 0;
+#X connect 21 1 18 0;
+#X connect 22 0 23 0;
+#X connect 23 0 1 0;
+#X restore 36 153 pd netsend to display;
+#N canvas 0 22 467 357 make 0;
+#X obj 31 78 ggee/getdir;
+#X obj 31 126 list;
+#X obj 31 163 list append images;
+#X text 153 33 python call from shell: file "query.py";
+#X obj 31 224 t a a;
+#X obj 31 284 ggee/shell;
+#X obj 224 299 sel;
+#X obj 271 319 print query;
+#X msg 271 292 error \$1;
+#X obj 31 306 s results;
+#X obj 31 33 r make_the_query;
+#X obj 136 142 r source_dataset_basename;
+#X obj 53 103 r write_parameter_filename;
+#X obj 58 251 print make_the_query;
+#X obj 199 323 s done-set;
+#X msg 31 190 /usr/bin/python \$1/../src/query.py \$1/../txt/\$3-entries.txt
+\$1/../data/\$3-data.json \$1/../queries/\$2-query.json;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 15 0;
+#X connect 4 0 5 0;
+#X connect 4 1 13 0;
+#X connect 5 0 9 0;
+#X connect 5 1 6 0;
+#X connect 6 0 14 0;
+#X connect 6 1 8 0;
+#X connect 8 0 7 0;
+#X connect 10 0 0 0;
+#X connect 11 0 2 1;
+#X connect 12 0 1 1;
+#X connect 15 0 4 0;
+#X restore 38 81 pd make query;
+#X text 130 78 <-- make the query;
+#X text 177 154 <-- connect and play images in display;
+#N canvas 311 171 638 401 parameters 0;
+#X obj 441 179 r params;
+#X obj 441 201 route write;
+#X obj 441 223 print written;
+#N canvas 0 22 450 300 check_filename 0;
+#X obj 72 216 symbol;
+#X obj 105 193 t a a;
+#X obj 72 43 t b b;
+#X obj 105 137 sel symbol;
+#X msg 105 159 symbol no_name_given;
+#X obj 72 15 inlet;
+#X obj 72 258 outlet;
+#X obj 105 112 r write_parameter_filename;
+#X obj 132 217 print write_parameter_filename;
+#X msg 99 72 \; write_parameter_filename-set bang;
+#X connect 0 0 6 0;
+#X connect 1 0 0 1;
+#X connect 1 1 8 0;
+#X connect 2 0 0 0;
+#X connect 2 1 9 0;
+#X connect 3 0 4 0;
+#X connect 3 1 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 2 0;
+#X connect 7 0 3 0;
+#X restore 36 115 pd check_filename;
+#X obj 50 264 loadbang;
+#X obj 41 243 r default;
+#N canvas 0 22 741 381 sliders 0;
+#X obj 38 27 r thres_R;
+#X obj 37 106 r thres_G;
+#X obj 38 182 r thres_B;
+#X obj 36 258 r thres_C;
+#X msg 36 300 \; params add thres_C \$1;
+#X msg 38 224 \; params add thres_B \$1;
+#X msg 38 69 \; params add thres_R \$1;
+#X obj 191 26 r brightness;
+#X msg 191 68 \; params add brightness \$1;
+#X obj 190 105 r bodies;
+#X msg 190 147 \; params add bodies \$1;
+#X obj 191 181 r faces;
+#X msg 191 223 \; params add faces \$1;
+#X obj 189 257 r smoothness;
+#X msg 189 299 \; params add smoothness \$1;
+#X obj 360 24 r cutness;
+#X msg 360 66 \; params add cutness \$1;
+#X obj 359 103 r blobiness;
+#X msg 359 145 \; params add blobiness \$1;
+#X obj 360 179 r skewness;
+#X msg 360 221 \; params add skewness \$1;
+#X obj 358 255 r boundedness;
+#X msg 358 297 \; params add boundedness \$1;
+#X obj 520 26 r kontrastedness;
+#X msg 520 68 \; params add kontrastedness \$1;
+#X obj 38 48 / 127;
+#X obj 191 47 / 127;
+#X obj 360 45 / 127;
+#X obj 37 127 / 127;
+#X obj 190 126 / 127;
+#X obj 359 124 / 127;
+#X obj 38 203 / 127;
+#X obj 191 202 / 127;
+#X obj 360 200 / 127;
+#X obj 36 279 / 127;
+#X obj 189 278 / 127;
+#X obj 358 276 / 127;
+#X obj 520 47 / 127;
+#X msg 37 148 \; params add thres_G \$1;
+#X msg 532 145 \; thres_R-set \$1 \; thres_G-set \$1 \; thres_B-set
+\$1 \; thres_C-set \$1 \; brightness-set \$1 \; bodies-set \$1 \; faces-set
+\$1 \; smoothness-set \$1 \; cutness-set \$1 \; blobiness-set \$1 \;
+skewness-set \$1 \; boundedness-set \$1 \; kontrastedness-set \$1 \;
+;
+#X obj 534 122 r global;
+#X connect 0 0 25 0;
+#X connect 1 0 28 0;
+#X connect 2 0 31 0;
+#X connect 3 0 34 0;
+#X connect 7 0 26 0;
+#X connect 9 0 29 0;
+#X connect 11 0 32 0;
+#X connect 13 0 35 0;
+#X connect 15 0 27 0;
+#X connect 17 0 30 0;
+#X connect 19 0 33 0;
+#X connect 21 0 36 0;
+#X connect 23 0 37 0;
+#X connect 25 0 6 0;
+#X connect 26 0 8 0;
+#X connect 27 0 16 0;
+#X connect 28 0 38 0;
+#X connect 29 0 10 0;
+#X connect 30 0 18 0;
+#X connect 31 0 5 0;
+#X connect 32 0 12 0;
+#X connect 33 0 20 0;
+#X connect 34 0 4 0;
+#X connect 35 0 14 0;
+#X connect 36 0 22 0;
+#X connect 37 0 24 0;
+#X connect 40 0 39 0;
+#X restore 35 30 pd sliders;
+#N canvas 0 22 707 396 toggles 0;
+#X obj 40 30 r thres_R-bool;
+#X obj 193 29 r brightness-bool;
+#X obj 362 27 r cutness-bool;
+#X obj 39 109 r thres_G-bool;
+#X obj 192 108 r bodies-bool;
+#X obj 361 106 r blobiness-bool;
+#X obj 40 185 r thres_B-bool;
+#X obj 193 184 r faces-bool;
+#X obj 362 182 r skewness-bool;
+#X obj 38 261 r thres_C-bool;
+#X obj 191 260 r smoothness-bool;
+#X obj 360 258 r boundedness-bool;
+#X obj 525 30 r kontrastedness-bool;
+#X msg 40 72 \; thres_R-set \$1;
+#X msg 193 72 \; brightness-set \$1;
+#X msg 362 69 \; cutness-set \$1;
+#X msg 39 151 \; thres_G-set \$1;
+#X msg 192 150 \; bodies-set \$1;
+#X msg 361 148 \; blobiness-set \$1;
+#X msg 40 227 \; thres_B-set \$1;
+#X msg 193 226 \; faces-set \$1;
+#X msg 362 224 \; skewness-set \$1;
+#X msg 38 303 \; thres_C-set \$1;
+#X msg 191 302 \; smoothness-set \$1;
+#X msg 360 300 \; boundedness-set \$1;
+#X msg 525 72 \; kontrastedness-set \$1;
+#X obj 40 51 * 127;
+#X obj 193 50 * 127;
+#X obj 362 48 * 127;
+#X obj 361 127 * 127;
+#X obj 192 129 * 127;
+#X obj 39 130 * 127;
+#X obj 40 206 * 127;
+#X obj 193 205 * 127;
+#X obj 362 203 * 127;
+#X obj 360 279 * 127;
+#X obj 191 281 * 127;
+#X obj 38 282 * 127;
+#X obj 525 51 * 127;
+#X obj 526 124 r global-bool;
+#X obj 526 146 * 127;
+#X msg 526 168 \; global-set \$1;
+#X connect 0 0 26 0;
+#X connect 1 0 27 0;
+#X connect 2 0 28 0;
+#X connect 3 0 31 0;
+#X connect 4 0 30 0;
+#X connect 5 0 29 0;
+#X connect 6 0 32 0;
+#X connect 7 0 33 0;
+#X connect 8 0 34 0;
+#X connect 9 0 37 0;
+#X connect 10 0 36 0;
+#X connect 11 0 35 0;
+#X connect 12 0 38 0;
+#X connect 26 0 13 0;
+#X connect 27 0 14 0;
+#X connect 28 0 15 0;
+#X connect 29 0 18 0;
+#X connect 30 0 17 0;
+#X connect 31 0 16 0;
+#X connect 32 0 19 0;
+#X connect 33 0 20 0;
+#X connect 34 0 21 0;
+#X connect 35 0 24 0;
+#X connect 36 0 23 0;
+#X connect 37 0 22 0;
+#X connect 38 0 25 0;
+#X connect 39 0 40 0;
+#X connect 40 0 41 0;
+#X restore 35 55 pd toggles;
+#X obj 457 65 purest_json/json-encode;
+#X obj 457 32 r params;
+#X text 262 64 parameters are stored here -->;
+#X text 322 93 ...and read here -->;
+#X text 378 154 reports params file written to disk;
+#X text 106 45 gui glue;
+#X obj 36 87 r write_param_file;
+#N canvas 469 40 520 409 read_parameter_file 0;
+#X obj 42 98 purest_json/json-encode;
+#X obj 42 120 purest_json/json-decode;
+#X obj 42 145 t a a;
+#X obj 123 163 list split 1;
+#X obj 19 170 list split 1;
+#X msg 132 188 symbol \$1-set;
+#X obj 80 241 s;
+#X obj 62 204 * 127;
+#X msg 42 76 read \$1 \, bang;
+#X obj 44 54 r read_parameter_file;
+#X obj 235 60 openpanel;
+#X obj 230 114 s read_parameter_file-set;
+#X obj 234 38 r load;
+#X obj 232 87 t a a;
+#X obj 249 161 ggee/shell;
+#X obj 252 332 s write_parameter_filename-set;
+#X msg 244 141 /usr/bin/basename \$1 .json;
+#X obj 251 205 list fromsymbol;
+#X obj 251 227 t a a;
+#X obj 306 233 list length;
+#X obj 306 255 - 6;
+#X obj 265 285 list split;
+#X obj 265 307 list tosymbol;
+#X obj 250 183 symbol;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 1 3 0;
+#X connect 3 0 5 0;
+#X connect 4 1 7 0;
+#X connect 5 0 6 1;
+#X connect 7 0 6 0;
+#X connect 8 0 0 0;
+#X connect 9 0 8 0;
+#X connect 10 0 13 0;
+#X connect 12 0 10 0;
+#X connect 13 0 11 0;
+#X connect 13 1 16 0;
+#X connect 14 0 23 0;
+#X connect 16 0 14 0;
+#X connect 17 0 18 0;
+#X connect 18 0 21 0;
+#X connect 18 1 19 0;
+#X connect 19 0 20 0;
+#X connect 20 0 21 1;
+#X connect 21 0 22 0;
+#X connect 22 0 15 0;
+#X connect 23 0 17 0;
+#X restore 457 93 pd read_parameter_file;
+#X msg 41 288 \; source_dataset_basename-set symbol images \; read_parameter_file-set
+symbol ../src/default_parameters.json, f 61;
+#X msg 36 146 \; params add imgX 320 \; params add imgY 212 \; params
+add maxKeyPoints 250 \; params add maxSkewAngle -90 \; params write
+../queries/\$1-query.json;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 3 0 17 0;
+#X connect 4 0 16 0;
+#X connect 5 0 16 0;
+#X connect 9 0 8 0;
+#X connect 14 0 3 0;
+#X restore 39 52 pd parameters;
+#X text 130 52 <-- write/read parameters to/from json file;
+#N canvas 574 63 428 550 parse 0;
+#X obj 169 23 r done;
+#X obj 33 86 purest_json/json-encode;
+#X obj 33 108 purest_json/json-decode;
+#X obj 33 130 list trim;
+#X obj 33 152 route union inter;
+#X obj 33 190 purest_json/json-decode;
+#X obj 31 213 list trim;
+#X obj 31 235 route data length;
+#X obj 41 366 spigot;
+#X obj 40 389 _array_fill \$0-union;
+#X obj 31 257 purest_json/json-decode;
+#X obj 30 280 list prepend append;
+#X obj 30 302 list trim;
+#X obj 29 325 list store;
+#X obj 35 345 t a b;
+#X obj 215 217 list trim;
+#X obj 215 239 route data length;
+#X obj 225 370 spigot;
+#X obj 214 262 purest_json/json-decode;
+#X obj 214 284 list prepend append;
+#X obj 214 306 list trim;
+#X obj 213 329 list store;
+#X obj 219 349 t a b;
+#X obj 225 392 _array_fill \$0-inter;
+#X obj 89 426 s \$0-union-len;
+#X obj 229 416 s \$0-inter-len;
+#X obj 215 192 purest_json/json-decode;
+#X obj 33 22 r results;
+#X obj 194 71 f \$0;
+#X msg 194 93 \; \$1-union resize 0 \, const 0 \; \$1-union-len 0 \;
+\$1-inter resize 0 \, const 0 \; \$1-inter-len 0;
+#X obj 167 47 t b b;
+#X connect 0 0 30 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 1 26 0;
+#X connect 5 0 6 0;
+#X connect 5 1 13 0;
+#X connect 6 0 7 0;
+#X connect 7 0 10 0;
+#X connect 7 1 8 1;
+#X connect 8 0 9 0;
+#X connect 9 0 24 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 12 0 13 0;
+#X connect 13 0 14 0;
+#X connect 14 0 8 0;
+#X connect 14 1 13 1;
+#X connect 15 0 16 0;
+#X connect 16 0 18 0;
+#X connect 16 1 17 1;
+#X connect 17 0 23 0;
+#X connect 18 0 19 0;
+#X connect 19 0 20 0;
+#X connect 20 0 21 0;
+#X connect 21 0 22 0;
+#X connect 22 0 17 0;
+#X connect 22 1 21 1;
+#X connect 23 0 25 0;
+#X connect 26 0 15 0;
+#X connect 26 1 21 0;
+#X connect 27 0 1 0;
+#X connect 28 0 29 0;
+#X connect 30 0 1 0;
+#X connect 30 1 28 0;
+#X restore 38 112 pd parse;
+#X text 102 111 <-- parse results -->;
+#X restore 144 496 pd guts;
+#X obj 32 497 bng 15 250 50 0 connect connect-set connect 17 7 0 10
+-262144 -1 -1;
+#X obj 100 497 tgl 15 0 play play-set play 17 7 0 10 -262144 -1 -1
+0 1;
+#X obj 153 414 bng 15 250 50 0 done done-set done 17 7 0 10 -228856
+-1 -1;
+#X obj 70 583 nbx 5 14 -1e+37 1e+37 0 0 \$0-inter \$0-inter-len intersections
+0 -8 0 10 -262144 -1 -1 6 256;
+#X obj 70 547 nbx 5 14 -1e+37 1e+37 0 0 \$0-union \$0-union-len unions
+0 -8 0 10 -262144 -1 -1 380 256;
+#X obj 31 537 vradio 30 1 0 2 choose_type choose_type-set choose 0
+-8 0 10 -262144 -1 -1 1;
+#X text 134 581 few filters!;
+#X obj 147 455 bng 10 250 50 0 load load-set load 13 5 0 10 -203904
+-1 -1;
+#X obj 148 551 nbx 5 14 -1e+37 1e+37 0 0 index index-set index 0 -8
+0 10 -262144 -1 -1 41 256;
