@@ -14,3 +14,4 @@ TXT=$PWD/txt
 TMP=$PWD/tmp
 LOG=$PWD/log
 PD=/usr/local/bin/pd
+DATA=$PWD/data

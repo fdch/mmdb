@@ -1,9 +1,10 @@
-import json, math, sys, itertools, os
+import json, sys, itertools, os
 import numpy as np
 from functools import reduce
+import utils
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-# Varuables -------------------------------------------------------------------
+# Variables -------------------------------------------------------------------
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 t_Red=[] # store indices for red threshold
@@ -41,79 +42,6 @@ default_parameters={
     "maxKeyPoints" : 250.0,
     "maxSkewAngle" : -90
 }
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-# Functions -------------------------------------------------------------------
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-def avg(lst): 
-    return sum(lst) / len(lst) 
-
-def gemwin_length(f):
-	return f*2*100/float(p['imgX']*p['imgY'])
-
-def hi_cut(val,thres,src,tar):
-	if thres == 0:
-		return
-	if (val >= thres) or thres == 1:
-		tar.append(int(src))
-
-def lo_cut(val,thres,src,tar):
-	if thres == 0:
-		return
-	if (val <= thres) or thres == 1:
-		tar.append(int(src))
-
-def bool_has(val,src,tar):
-	if (val >= 1) or (val >= "1"):
-		tar.append(int(src))
-
-def calc_avg(key,dic,subkey):
-	if key in dic:
-		k=[]
-		for i in dic[key]:
-			k.append(i[subkey])
-		return avg(k)
-
-def calc_sum(key,dic,subkey):
-	if key in dic:
-		k=[]
-		for i in dic[key]:
-			k.append(i[subkey])
-		return sum(k)
-
-def calc_circarea(key,dic,subkey):
-	if key in dic:
-		k=[]
-		for i in dic[key]:
-			r=i[subkey]
-			k.append(r*r*math.pi/float(p['imgX']*p['imgY']))
-		return avg(k)
-
-def intersect(*d):
-    sets = iter(map(set, d))
-    result = sets.next()
-    for s in sets:
-        result = result.intersection(s)
-    return result
-
-def convert(list): 
-    s = [str(i) for i in list]
-    res = " ".join(s) 
-    return(res) 
-
-def gauss(x,mean=0.8,stdev=0.01):
-	return math.exp(-1.0 * (((x-mean)**2.0) / (2.0 * stdev))) * ( 1.0 / math.sqrt(2.0 * (stdev**2.0) * math.pi) )
-
-def band_pass(val,thres,src,tar,q=8.0,stdev=0.01):
-	if thres == 0:
-		return
-	elif thres == 1:
-		tar.append(int(src))
-	else:
-		g = gauss(val,thres,stdev)
-		if g >= q:
-			tar.append(int(src))
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -145,7 +73,7 @@ try:
 except:
 	print "default_parameters"
 	p=default_parameters
-	target_file="results-default_parameters.json"
+	target_file="default_parameters-results.json"
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -154,62 +82,80 @@ except:
 #------------------------------------------------------------------------------
 
 for i in entries:
-	hi_cut(float(i[2]),p['brightness'],i[0],t_Hiq)
+	utils.band_pass(float(i[2]),p['brightness'],i[0],t_Hiq)
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
+
+# make body and face threshold pass through gaussian curve
+
+body_thres=utils.gauss_thres(p['bodies'])
+face_thres=utils.gauss_thres(p['faces'])
+
+# print "face_thres",face_thres
+# print "body_thres",body_thres
+
+# get gemwin dimensions in smaller variables
+gx,gy=p['imgX'],p['imgY']
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+
 
 for i in data['data']:
 	imgid=i['id']
-
-	# EDIT THIS SO THAT IT WORKS WITH KMEANS color
 	
 	maxclust = max(i['mean_col'], key=lambda x: x['pct'])
 
-	band_pass(maxclust['r'],p['thres_R'],imgid,t_Red)
-	band_pass(maxclust['g'],p['thres_G'],imgid,t_Gre)
-	band_pass(maxclust['b'],p['thres_B'],imgid,t_Blu)
-	band_pass(maxclust['pct'],p['thres_C'],imgid,t_Col)
-	
-	bavg=calc_avg('bodies',i,'r')
+	utils.band_pass(maxclust['r'],  p['thres_R'],imgid,t_Red)
+	utils.band_pass(maxclust['g'],  p['thres_G'],imgid,t_Gre)
+	utils.band_pass(maxclust['b'],  p['thres_B'],imgid,t_Blu)
+	utils.band_pass(maxclust['pct'],p['thres_C'],imgid,t_Col)
+
+
+
+	bavg=utils.calc_avg('bodies',i,'r')
 	if bavg:
-		bdiam=gemwin_length(bavg)
-		band_pass(bdiam,p['bodies'],imgid,t_Bdy)
-		# hi_cut(bdiam,p['bodies'],imgid,t_Bdy)
+		bdiam=utils.gemwin_length(bavg,gx,gy)
+		utils.band_pass(bdiam,body_thres,imgid,t_Bdy)
+		# utils.hi_cut(bdiam,p['bodies'],imgid,t_Bdy)
 
-	favg=calc_avg('faces',i,'r')
+	favg=utils.calc_avg('faces',i,'r')
 	if favg:
-		fdiam=gemwin_length(favg)
-		band_pass(fdiam,p['faces'],imgid,t_Fac)
-		# hi_cut(fdiam,p['faces'],imgid,t_Fac)
+		fdiam=utils.gemwin_length(favg,gx,gy)
+		utils.band_pass(fdiam,face_thres,imgid,t_Fac)
+		# utils.hi_cut(fdiam,p['faces'],imgid,t_Fac)
 
-	lavg=calc_avg('lines',i,'d')
+	lavg=utils.calc_avg('lines',i,'d')
 	if lavg:
-		lavglen=gemwin_length(lavg)
-		band_pass(lavglen,p['smoothness'],imgid,t_Smo)
-		band_pass(lavglen,p['cutness'],imgid,t_Cut)
-		# hi_cut(lavglen,p['smoothness'],imgid,t_Smo)
+		lavglen=utils.gemwin_length(lavg,gx,gy)
+		utils.band_pass(lavglen,p['smoothness'],imgid,t_Smo)
+		utils.band_pass(lavglen,1.-p['cutness'],imgid,t_Cut)
+		# utils.hi_cut(lavglen,p['smoothness'],imgid,t_Smo)
 		# lo_cut(lavglen,p['cutness'],imgid,t_Cut)
 
-	bsum=calc_sum('cvblob',i,'area')
+	bsum=utils.calc_sum('cvblob',i,'area')
 	if bsum:
-		band_pass(bsum,p['blobiness'],imgid,t_Blo)
-		# hi_cut(bsum,p['blobiness'],imgid,t_Blo)
+		utils.band_pass(bsum,p['blobiness'],imgid,t_Blo)
+		# utils.hi_cut(bsum,p['blobiness'],imgid,t_Blo)
 	
-	bskw=calc_avg('cvblob',i,'angle')
+	bskw=utils.calc_avg('cvblob',i,'angle')
 	if bskw:
-		band_pass(bskw,p['skewness']*p['maxSkewAngle'],imgid,t_Skw)
-		# hi_cut(bskw,p['skewness']*p['maxSkewAngle'],imgid,t_Skw)
+		utils.band_pass(bskw,p['skewness']*p['maxSkewAngle'],imgid,t_Skw)
+		# utils.hi_cut(bskw,p['skewness']*p['maxSkewAngle'],imgid,t_Skw)
 		
-	csum=calc_circarea('circles',i,'r')
+	csum=utils.calc_circarea('circles',i,'r',gx,gy)
 	if csum:
-		band_pass(csum,p['boundedness'],imgid,t_Bou)
-		# hi_cut(csum,p['boundedness'],imgid,t_Bou)
+		utils.band_pass(csum,p['boundedness'],imgid,t_Bou)
+		# utils.hi_cut(csum,p['boundedness'],imgid,t_Bou)
 
 	if 'keypoints' in i:
-		band_pass(len(i['keypoints'])/float(p['maxKeyPoints']),p['kontrastedness'],imgid,t_Kon)
-		# hi_cut(len(i['keypoints'])/float(p['maxKeyPoints']),p['kontrastedness'],imgid,t_Kon)
+		utils.band_pass(len(i['keypoints'])/float(p['maxKeyPoints']),p['kontrastedness'],imgid,t_Kon)
+		# utils.hi_cut(len(i['keypoints'])/float(p['maxKeyPoints']),p['kontrastedness'],imgid,t_Kon)
+
+
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------

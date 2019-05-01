@@ -1,27 +1,54 @@
-## Dataflow
+# mmdb
 
 ![](dataflow.png)
 
 
+
+
+
 ## Steps
 
-1. Download
+
+
+
+
+
+### 1. Download
 	
 Download image dataset (raw, original files) into `raw` directory.
 
-2. Preprocess
+-------------------------------------------------------------------------------
+
+
+
+
+
+
+
+### 2. Preprocess
 
 `sh preprocess`
 
-Resize, rename, and/or convert raw images into `pre` directory. This step needs [ffmpeg](https://ffmpeg.org/ffmpeg.html) and [sips](https://ss64.com/osx/sips.html)
+Resize, rename, and/or convert raw images into `img`, `vid`, and `aud` directories. This step needs [ffmpeg](https://ffmpeg.org/ffmpeg.html) and [sips](https://ss64.com/osx/sips.html)
 
-3. Analyze images
+
+
+-------------------------------------------------------------------------------
+
+
+
+
+
+
+### 3. Analyze Images
 
 `sh analyze`
 
 Output two files: an entry file and a data file
 
-A: Entry file contains one entry per image file holding the following data: 
+#### A
+
+Entry file contains one entry per image file holding the following data: 
 
   -	brightness: variance of the image histogram
   -	bodies    : number of bodies found (haarcascades)
@@ -31,15 +58,24 @@ A: Entry file contains one entry per image file holding the following data:
   -	circles   : number of hough circles found
   -	keypoints : number of keypoints (corners) found
 
-B: `JSON` data files contains one entry per image file holding the actual data
+#### B
+
+`JSON` data files contains one entry per image file holding the actual data
 
 [mean_col (x), histo (64), bodies (x), faces (x), cvblobs (x), lines (x), circles (x), keypoints (x)]
 
-Optionally:
+#### Optionally:
 
-Define a ROI using the `roi.pd` patch, and then setting the ROI flag to 1 before running `sh analyze`
+Define a ROI using the `roi.pd` patch, and then set the ROI flag to 1 before running `sh analyze`
 
-4. Sorter
+
+
+-------------------------------------------------------------------------------
+
+
+
+
+### 4. Sorter
 
 `sh sorter`
 
@@ -48,28 +84,72 @@ Use A to sort files based on any given field, and pairs of fields
 Output sorted files into `*-sorted.txt` where each line contains
 the sorted inidices of each image filename.
 
-5. Concatenate `JSON` files into one
-
-`python src/catjson.py`
-
-Places all data objects (B) inside an array of objects in one `JSON` object (C)
 
 
-6. Reader 
-
-`cd bin`
-`pd reader.pd`
-
-This patch can be used to:
-
--  visualize the `JSON` data files (B)
--  play the sorted sequences from (4)
+-------------------------------------------------------------------------------
 
 
-7. Query
 
-`cd bin`
-`pd query.pd`
+
+### 5. Color Sounds
+
+Obtain a sound database based on image colors. This is broken down in four steps: 
+
+#### 1. Get color words:
+
+`python src/colors.py`
+
+First, this script places all data objects (B) inside an array of objects in one `JSON` object (C) (Concatenates `JSON` files into one)
+
+This script gets English names of the clustered colors in the `JSON` data base (C), and outputs a file `./data/colorwords.json` containing one entry per unique color. The structure is like this: `name`, `idlist`, and `words`. 
+
+- `name` : has the English name of the color, e.g. 'blue'
+- `idlist`: has all the image ids that have that color
+- `words`: has nouns related to such color. These nouns are obtained by querying [datamuse](https://datamuse.com), e.g. 'sky, eyes, etc.'
+
+#### 2. Get color sounds:
+
+The file `./data/colorwords.json` is then used to query [Freesound](https://freesound.org) and download sounds related to all `words` and `name`s using:
+
+`python src/fs_download.oy`
+
+
+NOTE: some colors may not result in words that have a related sound to them.
+
+
+#### 3. Concatenate sounds:
+
+Concatenate color sounds into same files and name the file with the image id:
+
+`python src/concat_sounds.py`
+
+This script runs `ffprobe` to ignore files that might not be audio, or that might be malformed. It then runs `ffmpeg` to concatenate all the audio related to a color name into a file named with that same color name.
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+
+### 6. Reader 
+
+```
+cd bin
+pd reader.pd
+```
+This patch can be used to visualize the `JSON` data files (B)
+
+
+
+-------------------------------------------------------------------------------
+
+### 7. Query
+
+```
+cd bin
+pd query.pd
+```
 
 NOTE: This patch is a gui for `src/query.py`.
 
@@ -83,6 +163,72 @@ Both input query and its results are stored on `JSON` files for later use.
 
 
 
+-------------------------------------------------------------------------------
+
+
+
+### 8. Analyze Sounds
+
+`sh analyze_sounds.sh`
+
+This script runs the `analyze_sounds.pd` file in batch mode. It analyzes sounds in a given directory, and places all `*.timid` files in a second directory. Optionally, you can analyze only one file by index into the directory with a 3rd argument. 
+
+By default, the analysis is outputted both in `*.timid` and in `*.json` (using `timid2json.py`), and it concatenates all `JSON` files into one database.
+
+#### Instance Structure
+
+The first nine features are single-valued, so one float each. The last two features default to 50 values each, representing the bins of the bark scale with a filterbank spaced at 0.5. You can edit this and other parameters on the parameters file (open `analyze_sounds.pd` to do this). The instance length would change accordingly. The output analysis file is one per each audio file, with the following instance structure:
+
+1. barkSpecSlope
+2. barkSpecKurtosis
+3. barkSpecSkewness
+4. barkSpecBrightness
+5. barkSpecFlatness
+6. barkSpecRolloff
+7. barkSpecCentroid
+8. barkSpecSpread
+9. barkSpecIrregularity
+10. bfcc
+11. barkSpec (used for all of the above, internal window size is 512)
+
+(see help files for [timbreID](https://github.com/wbrent/timbreID))
+
+The default analysis window size is 4096, so in one second of file at 44100, you will have around 10 instances, which is ok for many purposes, but you can change this. On the one hand, you can specify overlaps (default 1, no overlap). On the other, you can define an analysis average factor **f** (default 8). This factor is used to average several smaller sized analysis into one. To do this, we simply take the mean of **f** consecutive analysis frames within the larger analysis window size. 
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+
+### 9. Match image with audio
+
+#### Matching query
+
+```
+cd bin
+pd matching_query.pd
+```
+
+This is like `query.pd` and `query.py` but uses `matching_query.py`. The same query is applied to images first, then from the results (intersection if any, or union) we get the related color words and their respective audio databases to perform the *same* query, that is, with the same input parameters. For this, we use the following **matching matrix**:
+
+| Image Feature         | Audio Feature                       |
+| --------------------- | ----------------------------------- |
+| thres_{R,G,B}         | audio database                      |
+| thres_C               | audio database                      |
+| {bodies, faces}       | Kurtosis                            |
+| {bodies, faces}[size] | Skewness                            |
+| brightness            | Slope                               |
+| smoothness\*          | grain size (for concatenation)      |
+| cutness\*             | grain size (for concatenation)      |
+| blobiness             | Brightness, Flatness, Rolloff       |
+| skewness\*            | grain location (for spatialization) |
+| boundedness           | Centroid, Spread                    |
+| kontrastedness        | Irregularity                        |
+
+
+(\*) Not used in the query
 
 
 
@@ -91,3 +237,14 @@ Both input query and its results are stored on `JSON` files for later use.
 
 
 
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+
+## TODO
+
+- implement continuity for images (using histogram clusters)
+- filters of type `NOT` in `query.py`
+- match **histograms** with **bfcc** ?
+- convert image-data.json to matching matrix parametes to calculate distance between audio-data.json

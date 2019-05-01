@@ -1,9 +1,24 @@
+# directories
 aud
 bak
 img
+colorsounds
+data
+fsaudio
+img
+log
 model
 pyt
+queries
 raw
+sound_data
 tmp
 txt
 vid
+# files
+*.json
+*.timid
+*.wav
+*.jpg
+*.pyc
+.DS_Store

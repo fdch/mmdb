@@ -29,8 +29,14 @@
 #X obj 53 58 t f f;
 #X obj 64 177 spigot 1;
 #X obj 53 30 r vis-keypoints;
+#X obj 329 65 t a a;
+#X obj 493 223 t a b;
+#X obj 572 246 f \$1;
+#X obj 572 272 * 3;
+#X obj 494 314 array set \$2-keypoints;
+#X msg 484 265 \$1 \$2 0;
 #X connect 0 0 10 0;
-#X connect 2 0 3 0;
+#X connect 2 0 30 0;
 #X connect 3 0 4 0;
 #X connect 3 1 5 0;
 #X connect 4 0 20 0;
@@ -64,3 +70,10 @@
 #X connect 27 1 28 1;
 #X connect 28 0 11 0;
 #X connect 29 0 27 0;
+#X connect 30 0 3 0;
+#X connect 30 1 31 0;
+#X connect 31 0 35 0;
+#X connect 31 1 32 0;
+#X connect 32 0 33 0;
+#X connect 33 0 34 1;
+#X connect 35 0 34 0;

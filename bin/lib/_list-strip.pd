@@ -1,0 +1,18 @@
+#N canvas 0 22 450 300 10;
+#X obj 131 95 list fromsymbol;
+#X obj 131 117 t a a;
+#X obj 186 123 list length;
+#X obj 118 172 list split;
+#X obj 118 194 list tosymbol;
+#X obj 137 30 inlet;
+#X obj 118 216 outlet;
+#X obj 192 170 - \$1;
+#X text 148 56 take in a symbol and remove last \$1 chars;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 1 1 2 0;
+#X connect 2 0 7 0;
+#X connect 3 0 4 0;
+#X connect 4 0 6 0;
+#X connect 5 0 0 0;
+#X connect 7 0 3 1;

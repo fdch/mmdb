@@ -1,6 +1,6 @@
 import json, os, glob
 
-def catjson(target,base="images",path="./txt/"):
+def catjson(target,path,base):
 	"""
 	@brief      { Concatenates json files into one object with one array }
 	
@@ -11,13 +11,10 @@ def catjson(target,base="images",path="./txt/"):
 	@return     { The array with all json files }
 	"""
 	files=[]
-	for filename in glob.glob(os.path.join(path, base+'-*.json')):
+	for filename in glob.glob(os.path.join(path, base)):
 		with open(filename) as f:
 			files.append(json.load(f))
 	with open(target,"w") as t:
 		t.write(json.dumps({"data":files},indent=4))
 	return files
 
-
-catjson("./data/images-data.json")
-catjson("./data/videos-data.json","videos")
