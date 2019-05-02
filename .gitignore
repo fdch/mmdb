@@ -22,3 +22,5 @@ vid
 *.jpg
 *.pyc
 .DS_Store
+
+*-data

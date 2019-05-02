@@ -4,7 +4,7 @@
 #X obj 10 10 clone fd_arrayclone 42 define c;
 #X restore 201 100 pd arrays;
 #X text 51 97 files loaded into -->;
-#N canvas 186 0 799 654 play 1;
+#N canvas 186 0 799 654 play 0;
 #N canvas 0 22 450 300 simple 0;
 #X obj 65 256 dac~;
 #X obj 79 185 tabplay~ c-0;
@@ -937,12 +937,12 @@ recorded, f 20;
 #X restore 198 183 pd dacout;
 #N canvas 3 452 585 212 controls 1;
 #X obj 40 34 vsl 15 128 0 127 0 0 vol vol-set vol 0 -9 0 10 -262144
--1 -1 9700 1;
+-1 -1 10600 1;
 #X obj 64 44 vu 15 120 env env -1 -8 0 10 -66577 -1 1 0;
 #X obj 172 51 hsl 256 15 25 300 0 0 grain-size-low grain-size-low-set
-grain-size-low -2 -8 0 12 -262144 -1 -1 400 1;
+grain-size-low -2 -8 0 12 -262144 -1 -1 2200 1;
 #X floatatom 442 50 10 0 0 1 percent grain-size-low -;
 #X obj 174 90 hsl 256 15 25 300 0 0 grain-size-hi grain-size-hi-set
-grain-size-hi -2 -8 0 12 -262144 -1 -1 2700 1;
+grain-size-hi -2 -8 0 12 -262144 -1 -1 2900 1;
 #X floatatom 444 89 10 0 0 1 percent grain-size-hi -;
 #X restore 60 161 pd controls;

@@ -3,6 +3,10 @@ import numpy as np
 from functools import reduce
 import utils
 import socket
+import struct
+
+default_port=5010
+default_host="localhost"
 
 
 #------------------------------------------------------------------------------
@@ -10,6 +14,17 @@ import socket
 # Variables -------------------------------------------------------------------
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
+
+
+
+entries=[] # store all entries from 'image-entries.txt' file
+image_data={}    # store image database from 'image-data.json' file
+audio_data={}    # store audio database from 'audio-data.json' file
+color_words={}   # store color words database
+
+image_results=[]
+color_indices=[]
+
 t_Red=[] # store indices for red threshold
 t_Gre=[] # store indices for green threshold
 t_Blu=[] # store indices for blue threshold
@@ -25,8 +40,6 @@ t_Bou=[] # store indices for boundedness of circles
 t_Kon=[] # store indices for keypoints contrast
 
 
-image_results=[]
-color_indices=[]
 
 index_image_arrays = {
 "thres_R" : "t_Red",
@@ -44,10 +57,7 @@ index_image_arrays = {
 "kontrastedness" : "t_Kon",
 }
 
-#------------------------------------------------------------------------------
-entries=[] # store all entries from '*-entries.txt' file
-image_data={}    # store all image data from '*-data.json' file
-audio_data={}    # store all audio data from '*-data.json' file
+
 default_parameters={
     "thres_R" : 0.8,
     "thres_G" : 0.5,
@@ -79,67 +89,49 @@ try:
 		entries=f.readlines()
 	entries = [x.strip().split(' ') for x in entries]
 except:
-	print "matching_query.py: no 'entries' file."
+	print "live_query.py: no 'entries' file (argument 1)"
 	quit(1)
 
 try:
 	with open(sys.argv[2],"r") as f:
 		image_data=json.load(f)
 except:
-	print "matching_query.py: no image 'data' file."
+	print "live_query.py: no image 'data' file (argumen 2)"
 	quit(1)
 
 try:
 	with open(sys.argv[3],"r") as f:
 		audio_data=json.load(f)
 except:
-	print "matching_query.py: no audio 'data' file."
+	print "live_query.py: no audio 'data' file (argument 3)"
 	quit(1)
 
 
 try:
-	param_file=sys.argv[4]
-	param_filename=os.path.splitext(param_file)[0]
-	with open(param_file,"r") as f:
-		p=json.load(f)
-	target_file=param_filename+"-results.json"
+	colorwords_file=sys.argv[4]
+	try:
+		with open(colorwords_file,"r") as f:
+			color_words=json.load(f)
+	except:
+		print "Could not open ./data/colorwords.json, did you make that step?"
+		print "Hint: Run python src/colors.py"
 except:
-	print "default_parameters"
-	p=default_parameters
-	target_file="default_parameters-results.json"
-
-
-color_words={}
-try:
-	colorwords_file=sys.argv[5]
-	with open(colorwords_file,"r") as f:
-		color_words=json.load(f)
-except:
-	print "Could not open ./data/colorwords.json, did you make that step?"
-	print "Hint: Run python src/colors.py"
+	print "live_query.py: no colorwords 'data' file (argument 4)"
 	quit(1)
 
+try:
+	port=int(sys.argv[5])
+	print "live_query.py: using port:", port
+except:
+	port=default_port
+	print "live_query.py: using default port:", port
 
-
-
-
-
-
-
-
-
-# make body and face threshold pass through gaussian curve
-
-body_thres=utils.gauss_thres(p['bodies'])
-face_thres=utils.gauss_thres(p['faces'])
-
-# print "face_thres",face_thres
-# print "body_thres",body_thres
-
-# get gemwin dimensions in smaller variables
-gx,gy=p['imgX'],p['imgY']
-
-
+try:
+	host=sys.argv[6]
+	print "live_query.py: using host:", host
+except:
+	host=default_host
+	print "live_query.py: using default host:", host
 
 
 #------------------------------------------------------------------------------
@@ -147,10 +139,25 @@ gx,gy=p['imgX'],p['imgY']
 # Run queries -----------------------------------------------------------------
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-def query_database(p)
+
+def query_database(p):
+
+	# Adjust some values first:
+
+	# make body and face threshold pass through gaussian curve
+	body_thres=utils.gauss_thres(p['bodies'])
+	face_thres=utils.gauss_thres(p['faces'])
+
+	# get gemwin dimensions in smaller variables
+	gx,gy=p['imgX'],p['imgY']
+
+
+	# query the entries file
 
 	for i in entries:
 		utils.hi_cut(float(i[2]),p['brightness'],i[0],t_Hiq)
+
+	# query the image database
 
 	for i in image_data['data']:
 		imgid=i['id']
@@ -192,18 +199,24 @@ def query_database(p)
 
 		if 'keypoints' in i:
 			utils.band_pass(len(i['keypoints'])/float(p['maxKeyPoints']),p['kontrastedness'],imgid,t_Kon)
-	# Target output with Intersections or Unions 
+	
+
+	# only concatenate arrays that have something
 
 	for i in p:
 		try:
-			if p[i] > 0: # only concatenate arrays that have something
+			if p[i] > 0: 
 				exec "arr = "+index_image_arrays[i]
 				image_results.append(arr)
 		except:
 			continue
 
+	# Filter image database query with Intersections or Unions 
+	
 	inter = list(reduce(np.intersect1d, (image_results)))
 	union = list(set().union(*image_results))
+
+	# place image database query in JSON object 'results'
 
 	results={
 		"inter": {
@@ -214,34 +227,42 @@ def query_database(p)
 		"data":union,
 		"length":len(union)
 		},
-		"audiofiles" : []
+		"audio" : []
 	}
 
-	image_indices=inter+union
 
+	# query the colorwords database (with all results)
 
-	# query the colorwords database
-
-	for i in image_indices:
+	for i in image_results:
 		for j in color_words['data']:
 			name=j['name']
 			if i in j['idlist']:
 				if name not in color_indices:
 					color_indices.append(name)
 
-	# audio database query
+
+	# query the audio database
 
 	for i in audio_data['data']:
+
 		file=i['file'] # the name of the audio database (color name)
+
+
+		# only use audio databases that have the color name
 
 		if file not in color_indices:
 			continue
 
+		# make the query
 		num_instances=i['data']['num_instances']
+		
 		audio_indices={"idx":[],"extra":[]}
+		
 		ai=audio_indices['idx']
 		ax=audio_indices['extra']
+		
 		idx=0
+
 		for j in i['data']['instances']:
 			# j['histo']
 			t=0
@@ -260,47 +281,95 @@ def query_database(p)
 					})
 			idx+=1
 		
-		entry={"file":file,"num_instances":num_instances,"indices":audio_indices}
-		results['audiofiles'].append(entry)
+		entry={"file":file,"num_instances":num_instances,"indices":list(audio_indices)}
 
-	with open(target_file,"w") as f:
-		f.write(json.dumps(results, indent=2))
+		# update the results object
+		
+		results['audio'].append(entry)
 
-	print "read "+target_file
+	# write database to disk
+
+	# with open(target_file,"w") as f:
+		# f.write(json.dumps(results, indent=2))
+
+	# print "read "+target_file
+
+	# return the results object
+	return results
+	# return {"data":results}
+
+def append_elements(d, s, t):
+	t.append(s)
+	t.append(str(d[s]['length']))
+	for e in d[s]['data']:
+		t.append(str(e))
+	return t
 
 
+def dict_to_pd_list(data):
+	l=[]
+
+	append_elements(data,"union", l)
+
+	l.append(";\n")
+
+	append_elements(data,"inter", l)
+
+	l.append(";\n")
+
+	l.append("audio")
+	l.append(str(len(data['audio'])))
+	
+	for e in data['audio']:
+		l.append(str(e))
+
+	l.append(";\n")
+
+	return " ".join(l)
 
 
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# Read incoming JSON TCP string -----------------------------------------------
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
+def pd_to_str(msg=''):
+	return str(msg+";\n") # .replace(",","\,")
 
+def pd_from_str(tcpstring):
+	return (tcpstring[:-2].replace("\,",","))
 
+def pd_read_json(data):
+	p=json.loads(pd_from_str(data))
 
+	# make the query
+	r = query_database(p)
+	# r = p # just echo the file
 
+	# return r
+	# return r object
+	return dict_to_pd_list(r)
+	# return pd_to_str(json.dumps(r,separators=(',',':'), indent=None))
 
-
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# Open Socket -----------------------------------------------------------------
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-s.bind(('localhost', 5010))
-s.listen(1)
+s.bind((host, port))
+
+s.listen(10)
+
 conn, addr = s.accept()
+
 while 1:
     data = conn.recv(1024)
     if not data:
         break
-    print data
-    conn.sendall(data)
+    conn.sendall(pd_read_json(data))
 conn.close()
-
-
-
-
-
-
-
-
-
-
-
-
 

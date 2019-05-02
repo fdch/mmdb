@@ -1,4 +1,4 @@
-#N canvas 823 0 457 327 10;
+#N canvas 823 0 457 511 10;
 #X declare -path purest_json -path ggee -path ./lib -lib timbreIDLib
 ;
 #X obj 245 158 array define \$0-union;
@@ -156,53 +156,12 @@
 #X connect 46 0 47 0;
 #X connect 47 0 39 0;
 #X connect 47 1 41 0;
-#X restore 32 259 pd netsend to display;
-#N canvas 0 22 467 506 make 0;
-#X obj 31 78 ggee/getdir;
-#X obj 31 126 list;
-#X obj 31 163 list append images;
-#X text 153 33 python call from shell: file "query.py";
-#X obj 31 234 t a a;
-#X obj 31 284 ggee/shell;
-#X obj 224 299 sel;
-#X obj 271 319 print query;
-#X msg 271 292 error \$1;
-#X obj 31 33 r make_the_query;
-#X obj 136 142 r source_dataset_basename;
-#X obj 53 103 r write_parameter_filename;
-#X obj 58 261 print make_the_query;
-#X obj 199 323 s done-set;
-#X obj 31 344 route read;
-#X obj 336 402 print;
-#X obj 31 370 symbol;
-#X msg 31 396 \; read_results_file-set symbol \$1;
-#X msg 31 190 /usr/bin/python \$1/../src/matching_query.py \$1/../txt/\$3-entries.txt
-\$1/../data/\$3-data.json \$1/../data/audio-data.json \$1/../queries/\$2-matching_query.json
-\$1/../data/colorwords.json, f 68;
-#X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 2 0 18 0;
-#X connect 4 0 5 0;
-#X connect 4 1 12 0;
-#X connect 5 0 14 0;
-#X connect 5 1 6 0;
-#X connect 6 0 13 0;
-#X connect 6 1 8 0;
-#X connect 8 0 7 0;
-#X connect 9 0 0 0;
-#X connect 10 0 2 1;
-#X connect 11 0 1 1;
-#X connect 14 0 16 0;
-#X connect 14 1 15 0;
-#X connect 16 0 17 0;
-#X connect 18 0 4 0;
-#X restore 35 133 pd make query;
-#X text 127 130 <-- make the query;
-#X text 173 260 <-- connect and play images in display;
+#X restore 33 285 pd netsend to display;
+#X text 174 286 <-- connect and play images in display;
 #N canvas 311 171 638 401 parameters 0;
-#X obj 441 179 r params;
-#X obj 441 201 route write;
-#X obj 441 223 print written;
+#X obj 441 209 r params;
+#X obj 441 231 route write;
+#X obj 441 253 print written;
 #N canvas 0 22 450 300 check_filename 0;
 #X obj 72 216 symbol;
 #X obj 105 193 t a a;
@@ -225,8 +184,8 @@
 #X connect 5 0 2 0;
 #X connect 7 0 3 0;
 #X restore 36 115 pd check_filename;
-#X obj 50 264 loadbang;
-#X obj 41 243 r default;
+#X obj 49 298 loadbang;
+#X obj 40 277 r default;
 #N canvas 0 22 741 381 sliders 0;
 #X obj 38 27 r thres_R;
 #X obj 37 106 r thres_G;
@@ -376,30 +335,30 @@ skewness-set \$1 \; boundedness-set \$1 \; kontrastedness-set \$1 \;
 #X obj 457 65 purest_json/json-encode;
 #X obj 457 32 r params;
 #X text 262 64 parameters are stored here -->;
-#X text 322 93 ...and read here -->;
-#X text 378 154 reports params file written to disk;
+#X text 322 123 ...and read here -->;
+#X text 378 184 reports params file written to disk;
 #X text 106 45 gui glue;
 #X obj 36 87 r write_param_file;
 #N canvas 388 40 520 409 read_parameter_file 0;
-#X obj 42 98 purest_json/json-encode;
-#X obj 42 120 purest_json/json-decode;
-#X obj 42 145 t a a;
-#X obj 123 163 list split 1;
-#X obj 19 170 list split 1;
-#X msg 132 188 symbol \$1-set;
-#X obj 80 241 s;
-#X obj 62 204 * 127;
-#X msg 42 76 read \$1 \, bang;
-#X obj 44 54 r read_parameter_file;
-#X obj 235 60 openpanel;
-#X obj 230 114 s read_parameter_file-set;
-#X obj 232 87 t a a;
-#X obj 249 161 ggee/shell;
-#X obj 250 257 s write_parameter_filename-set;
-#X msg 244 141 /usr/bin/basename \$1 .json;
-#X obj 250 183 symbol;
-#X obj 234 37 r load_params;
-#X obj 250 223 _list-strip 6;
+#X obj 42 148 purest_json/json-encode;
+#X obj 42 180 purest_json/json-decode;
+#X obj 42 205 t a a;
+#X obj 123 223 list split 1;
+#X obj 19 230 list split 1;
+#X msg 132 248 symbol \$1-set;
+#X obj 80 301 s;
+#X obj 62 264 * 127;
+#X msg 42 126 read \$1 \, bang;
+#X obj 44 34 r read_parameter_file;
+#X obj 235 110 openpanel;
+#X obj 230 164 s read_parameter_file-set;
+#X obj 232 137 t a a;
+#X obj 249 211 ggee/shell;
+#X obj 250 307 s write_parameter_filename-set;
+#X msg 244 191 /usr/bin/basename \$1 .json;
+#X obj 250 233 symbol;
+#X obj 236 29 r load_params;
+#X obj 250 273 _list-strip 6;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 4 0;
@@ -418,8 +377,8 @@ skewness-set \$1 \; boundedness-set \$1 \; kontrastedness-set \$1 \;
 #X connect 16 0 18 0;
 #X connect 17 0 10 0;
 #X connect 18 0 14 0;
-#X restore 457 93 pd read_parameter_file;
-#X msg 41 288 \; source_dataset_basename-set symbol images \; read_parameter_file-set
+#X restore 457 123 pd read_parameter_file;
+#X msg 40 322 \; source_dataset_basename-set symbol images \; read_parameter_file-set
 symbol ../src/default_parameters.json, f 61;
 #N canvas 154 40 368 502 read_results_file 0;
 #X obj 59 84 openpanel;
@@ -456,17 +415,93 @@ symbol ../src/default_parameters.json, f 61;
 #X connect 13 1 10 0;
 #X connect 15 0 13 0;
 #X connect 16 0 14 0;
-#X restore 458 120 pd read_results_file;
-#X msg 36 146 \; params add imgX 320 \; params add imgY 212 \; params
-add maxKeyPoints 250 \; params add maxSkewAngle -90 \; params write
-../queries/\$1-matching_query.json;
+#X restore 458 150 pd read_results_file;
+#X obj 457 87 s parameter_string;
+#X msg 36 146 \; params write ../queries/\$1-matching_query.json;
+#N canvas 0 22 450 300 global_params 0;
+#X obj 72 70 nbx 4 14 0 1e+37 0 0 imgX imgX-set imgX 0 -8 0 10 -262144
+-1 -1 40640 256;
+#X obj 72 101 nbx 4 14 0 1e+37 0 0 imgY imgY-set imgY 0 -8 0 10 -262144
+-1 -1 26924 256;
+#X obj 123 101 nbx 4 14 0 1e+37 0 0 maxKeyPoints maxKeyPoints-set maxKeyPoints
+0 -8 0 10 -262144 -1 -1 31750 256;
+#X obj 123 70 nbx 4 14 -180 180 0 0 maxSkewAngle maxSkewAngle-set maxSkewAngle
+0 -8 0 10 -262144 -1 -1 -180 256;
+#X restore 273 38 pd global_params;
+#N canvas 50 287 450 300 global_params-gui 0;
+#X obj 124 19 r imgX;
+#X obj 170 19 r imgY;
+#X obj 215 20 r maxKeyPoints;
+#X obj 318 20 r maxSkewAngle;
+#X msg 33 187 \; imgX-set 320 \; imgY-set 212 \; maxKeyPoints-set 250
+\; maxSkewAngle-set -90 \;;
+#X obj 33 160 loadbang;
+#X obj 189 190 r global_params;
+#X msg 189 212 \; pd-global_params vis 1;
+#X obj 55 83 pack f f f f;
+#X obj 54 58 f;
+#X obj 15 24 r send_globals;
+#X msg 211 75 \; params add imgX \$1 \; params add imgY \$2 \; params
+add maxKeyPoints \$3 \; params add maxSkewAngle \$4;
+#X connect 0 0 9 1;
+#X connect 1 0 8 1;
+#X connect 2 0 8 2;
+#X connect 3 0 8 3;
+#X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 8 0 11 0;
+#X connect 9 0 8 0;
+#X connect 10 0 9 0;
+#X restore 269 13 pd global_params-gui;
+#X obj 35 199 r make_the_query;
+#X msg 35 221 \; send_globals bang \; params bang \;;
+#N canvas 0 22 450 300 old_query 0;
+#X obj 30 38 ggee/getdir;
+#X obj 30 86 list;
+#X obj 30 123 list append images;
+#X obj 30 194 t a a;
+#X obj 30 244 ggee/shell;
+#X obj 223 259 sel;
+#X obj 270 279 print query;
+#X msg 270 252 error \$1;
+#X obj 135 102 r source_dataset_basename;
+#X obj 52 63 r write_parameter_filename;
+#X obj 57 221 print make_the_query;
+#X obj 198 283 s done-set;
+#X obj 30 304 route read;
+#X obj 335 362 print;
+#X obj 30 330 symbol;
+#X msg 30 356 \; read_results_file-set symbol \$1;
+#X msg 30 150 /usr/bin/python \$1/../src/matching_query.py \$1/../txt/\$3-entries.txt
+\$1/../data/\$3-data.json \$1/../data/audio-data.json \$1/../queries/\$2-matching_query.json
+\$1/../data/colorwords.json, f 68;
+#X text 153 33 python call from shell: file "query.py";
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 3 0 18 0;
+#X connect 2 0 16 0;
+#X connect 3 0 4 0;
+#X connect 3 1 10 0;
+#X connect 4 0 12 0;
+#X connect 4 1 5 0;
+#X connect 5 0 11 0;
+#X connect 5 1 7 0;
+#X connect 7 0 6 0;
+#X connect 8 0 2 1;
+#X connect 9 0 1 1;
+#X connect 12 0 14 0;
+#X connect 12 1 13 0;
+#X connect 14 0 15 0;
+#X connect 16 0 3 0;
+#X restore 506 290 pd old_query;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 3 0 19 0;
 #X connect 4 0 16 0;
 #X connect 5 0 16 0;
+#X connect 8 0 18 0;
 #X connect 9 0 8 0;
 #X connect 14 0 3 0;
+#X connect 22 0 23 0;
 #X restore 36 104 pd parameters;
 #X text 127 104 <-- write/read parameters to/from json file;
 #N canvas 270 47 887 618 parse 0;
@@ -741,34 +776,34 @@ timbreIDLib;
 #X obj 35 61 cnv 15 100 30 empty empty empty 20 12 0 14 -204786 -66577
 0;
 #X text 145 68 <-- open;
-#N canvas 713 61 567 553 controls 1;
-#N canvas 355 30 896 697 parameters 0;
+#N canvas 713 61 567 553 controls 0;
+#N canvas 369 0 896 697 parameters 0;
 #X obj 130 109 hsl 128 30 0 127 0 0 thres_R thres_R-set thres_R -2
-8 0 10 -258113 -262144 -1 10200 1;
+8 0 10 -258113 -262144 -1 0 1;
 #X obj 130 143 hsl 128 30 0 127 0 0 thres_G thres_G-set thres_G -2
-8 0 10 -4034 -262144 -1 10100 1;
+8 0 10 -4034 -262144 -1 0 1;
 #X obj 130 177 hsl 128 30 0 127 0 0 thres_B thres_B-set thres_B -2
-8 0 10 -4160 -204800 -204800 10500 1;
+8 0 10 -4160 -204800 -204800 0 1;
 #X obj 130 211 hsl 128 30 0 127 0 0 thres_C thres_C-set thres_C -2
 8 0 10 -232576 -262144 -159808 0 1;
 #X obj 130 245 hsl 128 30 0 127 0 0 brightness brightness-set brightness
 -2 8 0 10 -262130 -1 -1 0 1;
 #X obj 130 279 hsl 128 30 0 127 0 0 bodies bodies-set bodies -2 8 0
-10 -83269 -257985 -262130 12700 1;
+10 -83269 -257985 -262130 0 1;
 #X obj 130 313 hsl 128 30 0 127 0 0 faces faces-set faces -2 8 0 10
--83269 -257985 -262130 12700 1;
+-83269 -257985 -262130 0 1;
 #X obj 130 347 hsl 128 30 0 127 0 0 smoothness smoothness-set smoothness
 -2 8 0 10 -13330 -4032 -204800 0 1;
 #X obj 130 381 hsl 128 30 0 127 0 0 cutness cutness-set cutness -2
 8 0 10 -204800 -13330 -13330 0 1;
 #X obj 130 415 hsl 128 30 0 127 0 0 blobiness blobiness-set blobiness
--2 8 0 10 -16662 -4032 -203904 1900 1;
+-2 8 0 10 -16662 -4032 -203904 11100 1;
 #X obj 130 449 hsl 128 30 0 127 0 0 skewness skewness-set skewness
 -2 8 0 10 -45076 -159808 -232576 0 1;
 #X obj 130 483 hsl 128 30 0 127 0 0 boundedness boundedness-set boundedness
--2 8 0 10 -86277 -258113 -261234 6200 1;
+-2 8 0 10 -86277 -258113 -261234 0 1;
 #X obj 130 517 hsl 128 30 0 127 0 0 kontrastedness kontrastedness-set
-kontrastedness -2 8 0 10 -86853 -260097 -261682 1600 1;
+kontrastedness -2 8 0 10 -86853 -260097 -261682 0 1;
 #X obj 109 109 tgl 15 0 thres_R-bool thres_R-bool-set empty 17 7 0
 10 -262144 -1 -1 0 1;
 #X obj 109 143 tgl 15 0 thres_G-bool thres_G-bool-set empty 17 7 0
@@ -800,31 +835,31 @@ empty 17 7 0 10 -262144 -1 -1 0 1;
 #X obj 114 551 tgl 10 0 global-bool global-bool-set empty 17 7 0 10
 -262144 -1 -1 0 1;
 #X obj 265 110 nbx 5 14 -1e+37 1e+37 0 0 empty thres_R empty 0 -8 0
-10 -262144 -1 -1 102 256;
+10 -262144 -1 -1 0 256;
 #X obj 265 144 nbx 5 14 -1e+37 1e+37 0 0 empty thres_G empty 0 -8 0
-10 -262144 -1 -1 101 256;
+10 -262144 -1 -1 0 256;
 #X obj 265 178 nbx 5 14 -1e+37 1e+37 0 0 empty thres_B empty 0 -8 0
-10 -262144 -1 -1 105 256;
+10 -262144 -1 -1 0 256;
 #X obj 265 212 nbx 5 14 -1e+37 1e+37 0 0 empty thres_C empty 0 -8 0
 10 -262144 -1 -1 0 256;
 #X obj 265 246 nbx 5 14 -1e+37 1e+37 0 0 empty brightness empty 0 -8
 0 10 -262144 -1 -1 0 256;
 #X obj 265 280 nbx 5 14 -1e+37 1e+37 0 0 empty bodies empty 0 -8 0
-10 -262144 -1 -1 127 256;
+10 -262144 -1 -1 0 256;
 #X obj 265 314 nbx 5 14 -1e+37 1e+37 0 0 empty faces empty 0 -8 0 10
--262144 -1 -1 127 256;
+-262144 -1 -1 0 256;
 #X obj 265 348 nbx 5 14 -1e+37 1e+37 0 0 empty smoothness empty 0 -8
 0 10 -262144 -1 -1 0 256;
 #X obj 265 382 nbx 5 14 -1e+37 1e+37 0 0 empty cutness empty 0 -8 0
 10 -262144 -1 -1 0 256;
 #X obj 265 416 nbx 5 14 -1e+37 1e+37 0 0 empty blobiness empty 0 -8
-0 10 -262144 -1 -1 19 256;
+0 10 -262144 -1 -1 111 256;
 #X obj 265 450 nbx 5 14 -1e+37 1e+37 0 0 empty skewness empty 0 -8
 0 10 -262144 -1 -1 0 256;
 #X obj 265 484 nbx 5 14 -1e+37 1e+37 0 0 empty boundedness empty 0
--8 0 10 -262144 -1 -1 62 256;
+-8 0 10 -262144 -1 -1 0 256;
 #X obj 265 518 nbx 5 14 -1e+37 1e+37 0 0 empty kontrastedness empty
-0 -8 0 10 -262144 -1 -1 16 256;
+0 -8 0 10 -262144 -1 -1 0 256;
 #X obj 332 411 cnv 15 300 100 empty empty fsort_(field_sort) 10 10
 0 14 -204786 -1 0;
 #X obj 341 444 vradio 15 1 0 3 lin_rev_scr lin_rev_scr-set lin_rev_scr
@@ -843,26 +878,26 @@ blobs_and_keypoints 17 7 0 10 -262144 -1 -1;
 17 7 0 10 -262144 -1 -1;
 #X obj 332 515 cnv 15 300 100 empty empty display 10 10 0 14 -204800
 -1 0;
-#X obj 345 541 bng 15 250 50 0 connect connect-set connect 17 7 0 10
+#X obj 466 518 bng 15 250 50 0 connect connect-set connect 17 7 0 10
 -262144 -1 -1;
-#X obj 444 558 tgl 15 0 play play-set play 17 7 0 10 -262144 -1 -1
+#X obj 487 564 tgl 15 0 play play-set play 17 7 0 10 -262144 -1 -1
 0 1;
-#X obj 498 563 nbx 5 14 -1e+37 1e+37 0 0 index index-set index 0 -8
-0 10 -262144 -1 -1 123 256;
-#X obj 444 531 tgl 15 0 render render-set render 17 7 0 10 -262144
+#X obj 570 563 nbx 5 14 -1e+37 1e+37 0 0 index index-set index 0 -8
+0 10 -262144 -1 -1 0 256;
+#X obj 487 539 tgl 15 0 render render-set render 17 7 0 10 -262144
 -1 -1 0 1;
 #X obj 362 590 hsl 260 10 0 590 0 0 timeline timeline-set timeline
--2 -8 0 10 -204800 -1 -1 5399 1;
-#X obj 498 531 nbx 5 14 1 100 0 0 fps fps-set fps 0 -8 0 10 -262144
--1 -1 18 256;
+-2 -8 0 10 -204800 -1 -1 0 1;
+#X obj 570 532 nbx 5 14 1 100 0 0 fps fps-set fps 0 -8 0 10 -262144
+-1 -1 8 256;
 #X obj 332 307 cnv 15 300 100 empty empty choose_query_or_sort_type
 10 10 0 14 -262130 -1 0;
 #X obj 443 381 nbx 5 14 -1e+37 1e+37 0 0 \$0-inter \$0-inter-len intersections_found
 0 -8 0 10 -262144 -1 -1 0 256;
 #X obj 443 348 nbx 5 14 -1e+37 1e+37 0 0 \$0-union \$0-union-len unions_found
-0 -8 0 10 -262144 -1 -1 400 256;
+0 -8 0 10 -262144 -1 -1 590 256;
 #X obj 344 339 hradio 30 1 0 3 choose_type choose_type-set union_inter_fsort
-0 -8 0 10 -262144 -1 -1 1;
+0 -8 0 10 -262144 -1 -1 0;
 #X symbolatom 343 382 0 0 0 2 using: sort_array -;
 #X text 507 379 <-- use few filters!;
 #X obj 332 101 cnv 15 300 100 empty empty write_and_make_query 10 10
@@ -877,7 +912,7 @@ write_parameter_filename;
 7 0 10 -262144 -1 -1;
 #X symbolatom 343 134 10 0 0 2 source_dataset_basename source_dataset_basename-set
 source_dataset_basename;
-#X obj 584 177 bng 15 250 50 0 done done-set done 17 7 0 10 -228856
+#X obj 588 182 bng 15 250 50 0 done done-set done 17 7 0 10 -228856
 -1 -1;
 #X obj 332 204 cnv 15 300 100 empty empty read_parameters_or_results_file
 10 10 0 14 -261682 -1 0;
@@ -890,11 +925,21 @@ read_results_file;
 #X obj 530 273 bng 10 250 50 0 load_results load_results-set load_results
 13 5 0 10 -203904 -1 -1;
 #X obj 362 604 hsl 260 8 0 97 0 0 index_timeline index_timeline-set
-empty -2 -8 0 10 -204800 -1 -1 25366 1;
+empty -2 -8 0 10 -204800 -1 -1 0 1;
 #X obj 340 592 bng 15 250 50 0 reset_index reset_index-set empty 17
 7 0 10 -261682 -1 -1;
-#X obj 564 562 tgl 15 0 randomize randomize-set randomize 17 7 0 10
--262144 -1 -1 1 1;
+#X obj 527 564 tgl 15 0 randomize randomize-set rand 17 7 0 10 -262144
+-1 -1 0 1;
+#X obj 427 544 bng 10 250 50 0 kill_display kill_display-set kill_display
+14 5 0 8 -261234 -1 -1;
+#X obj 344 541 bng 15 250 50 0 start_display start_display-set start_display
+17 7 0 10 -262144 -1 -1;
+#X obj 427 562 bng 10 250 50 0 kill_audio kill_audio-set kill_audio
+14 5 0 8 -261234 -1 -1;
+#X obj 344 561 bng 15 250 50 0 start_audio start_audio-set start_audio
+17 7 0 10 -262144 -1 -1;
+#X obj 345 182 bng 15 250 50 0 global_params global_params-set global_params
+17 7 0 10 -262144 -1 -1;
 #X coords 0 -1 1 1 533 518 2 100 100;
 #X restore 19 15 pd parameters;
 #X restore 43 68 pd controls;
@@ -942,5 +987,202 @@ empty -2 -8 0 10 -204800 -1 -1 25366 1;
 #X connect 9 0 8 0;
 #X connect 12 0 13 0;
 #X connect 13 0 14 0;
-#X restore 29 281 pd netsend to audio;
-#X text 173 280 <-- connect and play audio files;
+#X restore 35 307 pd netsend to audio;
+#X text 179 306 <-- connect and play audio files;
+#N canvas 536 38 542 592 live 0;
+#X obj 43 186 netsend;
+#X msg 72 119 disconnect;
+#X msg 261 86 send \$1;
+#X obj 43 255 print live_query;
+#X obj 43 20 r connect_live_query;
+#X obj 74 45 r disconnect_live_query;
+#X obj 262 56 r parameter_string;
+#X msg 335 157 \; make_the_query bang;
+#X msg 43 77 connect localhost 5015;
+#X obj 213 163 list split 2;
+#X obj 228 458 list;
+#X obj 188 210 list split 1;
+#X obj 307 446 array size;
+#X obj 199 269 symbol;
+#X obj 359 383 makefilename \$0-%s;
+#X obj 376 534 array set;
+#X obj 201 307 t b b a;
+#X obj 374 447 makefilename %s-len;
+#X obj 309 486 s;
+#X obj 359 419 t a a a;
+#X obj 289 419 t f f;
+#X obj 283 370 f;
+#X connect 0 0 3 0;
+#X connect 0 1 9 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 4 0 8 0;
+#X connect 5 0 1 0;
+#X connect 6 0 2 0;
+#X connect 8 0 0 0;
+#X connect 9 0 11 0;
+#X connect 9 1 10 1;
+#X connect 10 0 15 0;
+#X connect 11 0 13 0;
+#X connect 11 1 21 1;
+#X connect 13 0 16 0;
+#X connect 14 0 19 0;
+#X connect 16 0 10 0;
+#X connect 16 1 21 0;
+#X connect 16 2 14 0;
+#X connect 17 0 18 1;
+#X connect 19 0 12 1;
+#X connect 19 1 17 0;
+#X connect 19 2 15 2;
+#X connect 20 0 18 0;
+#X connect 20 1 12 0;
+#X connect 21 0 20 0;
+#X restore 36 358 pd live query;
+#N canvas 321 142 677 477 processes_gui 0;
+#X obj 173 339 f;
+#X obj 188 317 r display_pid;
+#X obj 121 245 r kill_display;
+#X obj 173 361 sel;
+#X obj 188 389 s pid_killer;
+#X obj 86 48 r start_display;
+#X msg 86 183 \; pid_start display;
+#X obj 86 85 t b b;
+#X msg 166 219 1;
+#X obj 121 270 spigot;
+#X msg 178 273 0;
+#X obj 86 124 spigot 1;
+#X obj 86 153 t b b;
+#X msg 126 153 0;
+#X obj 133 298 t b b b;
+#X msg 86 230 1;
+#X obj 478 342 f;
+#X obj 478 364 sel;
+#X obj 493 392 s pid_killer;
+#X obj 391 88 t b b;
+#X msg 471 222 1;
+#X obj 426 273 spigot;
+#X msg 483 276 0;
+#X obj 391 127 spigot 1;
+#X obj 391 156 t b b;
+#X msg 431 156 0;
+#X obj 438 301 t b b b;
+#X msg 391 233 1;
+#X obj 391 51 r start_audio;
+#X msg 391 186 \; pid_start audio;
+#X obj 426 248 r kill_audio;
+#X obj 493 320 r audio_pid;
+#X connect 0 0 3 0;
+#X connect 1 0 0 1;
+#X connect 2 0 9 0;
+#X connect 3 1 4 0;
+#X connect 5 0 7 0;
+#X connect 7 0 11 0;
+#X connect 7 1 8 0;
+#X connect 8 0 9 1;
+#X connect 9 0 14 0;
+#X connect 10 0 9 1;
+#X connect 11 0 12 0;
+#X connect 12 0 6 0;
+#X connect 12 1 13 0;
+#X connect 13 0 11 1;
+#X connect 14 0 15 0;
+#X connect 14 1 0 0;
+#X connect 14 2 10 0;
+#X connect 15 0 11 1;
+#X connect 16 0 17 0;
+#X connect 17 1 18 0;
+#X connect 19 0 23 0;
+#X connect 19 1 20 0;
+#X connect 20 0 21 1;
+#X connect 21 0 26 0;
+#X connect 22 0 21 1;
+#X connect 23 0 24 0;
+#X connect 24 0 29 0;
+#X connect 24 1 25 0;
+#X connect 25 0 23 1;
+#X connect 26 0 27 0;
+#X connect 26 1 16 0;
+#X connect 26 2 22 0;
+#X connect 27 0 23 1;
+#X connect 28 0 19 0;
+#X connect 30 0 21 0;
+#X connect 31 0 16 1;
+#X restore 153 256 pd processes_gui;
+#N canvas 0 22 557 441 processes_guts 0;
+#X obj 56 51 symbol;
+#X msg 138 120 set \$1;
+#X obj 138 142 makefilename;
+#X obj 56 96 ggee/getdir;
+#X obj 138 188 ggee/shell;
+#X msg 138 163 /bin/bash \$1;
+#X obj 138 98 makefilename %%s/../%s;
+#X obj 282 204 sel;
+#X obj 137 209 f;
+#X obj 382 240 r display_pid;
+#X obj 340 190 t a a;
+#X obj 282 249 symbol;
+#X obj 334 248 symbol;
+#X obj 334 226 t b f;
+#X obj 282 301 list;
+#X obj 382 262 t f f;
+#X obj 334 300 list;
+#X obj 334 322 list;
+#N canvas 0 22 450 300 pid_killer 0;
+#X obj 113 53 r pid_killer;
+#X obj 113 75 list prepend kill;
+#X obj 113 97 list trim;
+#X obj 114 186 outlet;
+#X obj 133 145 t a a;
+#X obj 238 186 outlet;
+#X obj 238 140 list split 1;
+#X obj 238 163 symbol;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 4 0 3 0;
+#X connect 4 1 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 5 0;
+#X restore 266 152 pd pid_killer;
+#X obj 55 27 r pid_start;
+#X obj 137 231 s;
+#X obj 284 98 makefilename %s_pid;
+#X obj 56 73 t b a a a, f 54;
+#X obj 334 350 list prepend ERROR;
+#X obj 334 378 print process_status;
+#X connect 0 0 22 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 4 0 8 0;
+#X connect 4 1 7 0;
+#X connect 5 0 4 0;
+#X connect 6 0 1 0;
+#X connect 7 0 11 0;
+#X connect 7 1 13 0;
+#X connect 8 0 20 0;
+#X connect 9 0 15 0;
+#X connect 10 0 11 1;
+#X connect 10 1 12 1;
+#X connect 11 0 14 0;
+#X connect 12 0 16 0;
+#X connect 13 0 12 0;
+#X connect 13 1 17 1;
+#X connect 14 0 24 0;
+#X connect 15 0 14 1;
+#X connect 15 1 16 1;
+#X connect 16 0 17 0;
+#X connect 17 0 23 0;
+#X connect 18 0 4 0;
+#X connect 18 1 10 0;
+#X connect 19 0 0 0;
+#X connect 21 0 20 1;
+#X connect 22 0 3 0;
+#X connect 22 1 6 0;
+#X connect 22 2 21 0;
+#X connect 22 3 10 0;
+#X connect 23 0 24 0;
+#X restore 35 256 pd processes_guts;
+#X text 160 215 <-- to read sorted entries;
+#X text 160 119 (and make the query);
+#X obj 245 136 array define \$0-audio;

@@ -1,6 +1,8 @@
 #!/bin/bash
 
+source paths
 source ./src/paths.sh
+source ../src/paths.sh
 
 function sort_it()
 {

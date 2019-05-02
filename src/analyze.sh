@@ -2,8 +2,11 @@
 
 # LATER: make sure you don't run out of memory!
 
+source paths
 source ./src/paths.sh
-source ./src/settings.sh
+source ../src/paths.sh
+
+source ${SRC}/settings.sh
 
 PDPATCH="analyze.pd"
 
