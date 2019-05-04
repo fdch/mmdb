@@ -22,23 +22,6 @@ image_data={}    # store image database from 'image-data.json' file
 audio_data={}    # store audio database from 'audio-data.json' file
 color_words={}   # store color words database
 
-image_results=[]
-color_indices=[]
-
-t_Red=[] # store indices for red threshold
-t_Gre=[] # store indices for green threshold
-t_Blu=[] # store indices for blue threshold
-t_Col=[] # store indices for color threshold (avg rgb)
-t_Hiq=[] # store indices for histogram quantile threshold
-t_Bdy=[] # store indices for body (threshold by size)
-t_Fac=[] # store indices for faces (threshold by size)
-t_Smo=[] # store indices for smoothness threshold
-t_Cut=[] # store indices for cutness threshold
-t_Blo=[] # store indices for blobiness threshold
-t_Skw=[] # store indices for skewness threshold
-t_Bou=[] # store indices for boundedness of circles
-t_Kon=[] # store indices for keypoints contrast
-
 
 
 index_image_arrays = {
@@ -57,6 +40,15 @@ index_image_arrays = {
 "kontrastedness" : "t_Kon",
 }
 
+	
+index_audio_arrays = {
+"brightness" : "a_br",
+"bodies" :  "a_bo",
+"faces" :  "a_fa",
+"blobiness" :  "a_bl",
+"boundedness" : "a_bn",
+"kontrastedness" : "_ako",
+}
 
 default_parameters={
     "thres_R" : 0.8,
@@ -142,6 +134,26 @@ except:
 
 def query_database(p):
 
+	results={}
+
+	image_results=[]
+	color_indices=[]
+
+	t_Red=[] # store indices for red threshold
+	t_Gre=[] # store indices for green threshold
+	t_Blu=[] # store indices for blue threshold
+	t_Col=[] # store indices for color threshold (avg rgb)
+	t_Hiq=[] # store indices for histogram quantile threshold
+	t_Bdy=[] # store indices for body (threshold by size)
+	t_Fac=[] # store indices for faces (threshold by size)
+	t_Smo=[] # store indices for smoothness threshold
+	t_Cut=[] # store indices for cutness threshold
+	t_Blo=[] # store indices for blobiness threshold
+	t_Skw=[] # store indices for skewness threshold
+	t_Bou=[] # store indices for boundedness of circles
+	t_Kon=[] # store indices for keypoints contrast
+
+
 	# Adjust some values first:
 
 	# make body and face threshold pass through gaussian curve
@@ -150,6 +162,10 @@ def query_database(p):
 
 	# get gemwin dimensions in smaller variables
 	gx,gy=p['imgX'],p['imgY']
+
+
+	c_avg=(p['thres_R']+p['thres_G']+p['thres_B'])/3.0
+	b_avg=(p['brightness']+c_avg)/2.
 
 
 	# query the entries file
@@ -216,32 +232,28 @@ def query_database(p):
 	inter = list(reduce(np.intersect1d, (image_results)))
 	union = list(set().union(*image_results))
 
-	# place image database query in JSON object 'results'
-
-	results={
-		"inter": {
-		"data":inter,
-		"length":len(inter)
-		},
-		"union": {
-		"data":union,
-		"length":len(union)
-		},
-		"audio" : []
-	}
-
 
 	# query the colorwords database (with all results)
 
-	for i in image_results:
+	for i in union:
+		# print i
 		for j in color_words['data']:
 			name=j['name']
 			if i in j['idlist']:
+				# print "is in array",name
 				if name not in color_indices:
+					# print "_____appended",name
 					color_indices.append(name)
+				# else:
+					# print "is repeated",name
+			# else:
+				# print "not in array",name
 
 
-	# query the audio database
+	# print "color indices",color_indices
+
+	audio_entries=[]
+	
 
 	for i in audio_data['data']:
 
@@ -250,42 +262,75 @@ def query_database(p):
 
 		# only use audio databases that have the color name
 
+		# there is something wrong here
 		if file not in color_indices:
+			# print "ignoring",file
 			continue
 
+		# print "using", file
 		# make the query
-		num_instances=i['data']['num_instances']
+		# num_instances=i['data']['num_instances']
 		
-		audio_indices={"idx":[],"extra":[]}
-		
-		ai=audio_indices['idx']
-		ax=audio_indices['extra']
-		
+
+
+
+		audio_results=[]
+
 		idx=0
 
 		for j in i['data']['instances']:
+			a_br=[]
+			a_bo=[]
+			a_fa=[]
+			a_bl=[]
+			a_bn=[]
+			a_ko=[]
+
+			sidx=str(idx)
+
+			utils.band_pass(j['brightness'],b_avg,sidx,a_br)
+			utils.band_pass(j['body_face'],body_thres,sidx,a_bo)
+			utils.band_pass(j['body_face_size'],face_thres,sidx,a_fa)
+			utils.band_pass(j['blobiness'],p['blobiness'],sidx,a_bl)
+			utils.band_pass(j['boundedness'],p['boundedness'],sidx,a_bn)
+			utils.band_pass(j['kontrastedness'],p['kontrastedness'],sidx,a_ko)
+			
+			audio_results.append(list(set().union(a_br,a_bo,a_fa,a_bl,a_bn,a_ko)))
+
+			# ignored stuff:
+			# 
 			# j['histo']
-			t=0
-			t+=utils.band_pass(j['brightness'],p['brightness'],idx,ai)
-			t+=utils.band_pass(j['body_face'],body_thres,idx,ai)
-			t+=utils.band_pass(j['body_face_size'],face_thres,idx,ai)
-			t+=utils.band_pass(j['blobiness'],p['blobiness'],idx,ai)
-			t+=utils.band_pass(j['boundedness'],p['boundedness'],idx,ai)
-			t+=utils.band_pass(j['kontrastedness'],p['kontrastedness'],idx,ai)
-			if t>=4:
-				ax.append({
-					"index":idx,
-					"smoothness":p['smoothness'],
-					"cutness":p['cutness'],
-					"skewness":p['skewness']
-					})
+
 			idx+=1
 		
-		entry={"file":file,"num_instances":num_instances,"indices":list(audio_indices)}
+		# only concatenate arrays that have something
 
+		# for i in index_audio_arrays.keys():
+		# 	try:
+		# 		if p[i] > 0: 
+		# 			exec "arr = "+index_audio_arrays[i]
+		# 			audio_results.append(arr)
+		# 			print "appending",index_audio_arrays[i]
+		# 	except:
+		# 		continue		
+
+		a_union=list(set().union(*audio_results))
+		# a_inter = list(reduce(np.intersect1d, (audio_results)))
+		
+
+		# print json.dumps(entry,separators=(",",":"),indent=None)
+		
 		# update the results object
 		
-		results['audio'].append(entry)
+		audio_entries.append({
+			"file": file,
+			"union": {"data":a_union,"length":len(a_union)}
+			# "inter": {"data":a_inter,"length":len(a_inter)},
+			})
+
+	results.update({"inter":{"data":inter,"length":len(inter)}})
+	results.update({"union":{"data":union,"length":len(union)}})
+	results.update({"audio":{"data":audio_entries,"length":len(audio_entries)}}) 
 
 	# write database to disk
 
@@ -296,34 +341,75 @@ def query_database(p):
 
 	# return the results object
 	return results
-	# return {"data":results}
+
 
 def append_elements(d, s, t):
+
+
+
+	for e in d[s]['data']:
+		t.append("float")
+		t.append(str(e))
+		t.append(";\n")
+
+
+	t.append("list")
 	t.append(s)
 	t.append(str(d[s]['length']))
-	for e in d[s]['data']:
-		t.append(str(e))
+	t.append(";\n")
+
 	return t
 
 
+	# 'audio':  { 
+	#     "data" : [ {
+	# 	       "file": file,
+	# 	       "inter": {"data":a_inter,"length":len(a_inter)},
+	# 	       "union": {"data":a_union,"length":len(a_union)}
+	# 	   },{},... ]
+	# 	}
+
 def dict_to_pd_list(data):
 	l=[]
+	l.append("symbol begin;\n")
 
+	# first the floats, then the header...
+	
 	append_elements(data,"union", l)
-
-	l.append(";\n")
-
 	append_elements(data,"inter", l)
 
-	l.append(";\n")
 
-	l.append("audio")
-	l.append(str(len(data['audio'])))
+	for e in data['audio']['data']:
+
+
+
+
+		# l.append(e['file'])
+		# l.append("a_inter")
+		# l.append(str(e['inter']['length']))
+		# for x in e['inter']['data']:
+		# 	l.append(str(x))
+		# l.append(";\n")
+
+		for x in e['union']['data']:
+			l.append("float")
+			l.append(str(x))
+			l.append(";\n")
+		
+
+		l.append("list")
+		l.append(e['file'])
+		l.append(str(e['union']['length']))
+		l.append(";\n")
+
+
+	l.append("symbol end;\n")
+	# if "audio" in data:
+	# 	for i in data['audio']:
+	# 		append_elements(i,'file',l)
+	# 		append_elements(i,'indices',l)
 	
-	for e in data['audio']:
-		l.append(str(e))
-
-	l.append(";\n")
+	# print json.dumps(data['audio'],separators=(",",":"),indent=None)
 
 	return " ".join(l)
 

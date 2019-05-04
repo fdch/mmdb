@@ -3,8 +3,8 @@
 # LATER: make sure you don't run out of memory!
 
 source paths
-source ./src/paths.sh
-source ../src/paths.sh
+
+
 
 source ${SRC}/settings.sh
 

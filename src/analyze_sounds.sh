@@ -1,8 +1,7 @@
 #!/bin/bash
 
 source paths
-source ./src/paths.sh
-source ../src/paths.sh
+
 
 if [[ -d $1 ]]
 then

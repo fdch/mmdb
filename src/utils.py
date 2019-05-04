@@ -65,11 +65,11 @@ def gauss(x,mean=0.7,stdev=0.01):
 	return math.exp(-1.0 * (((x-mean)**2.0) / (2.0 * stdev))) * ( 1.0 / math.sqrt(2.0 * (stdev**2.0) * math.pi) )
 
 def band_pass(val,thres,src,tar,q=8.0,stdev=0.015):
-	src=int(src)
+	# src=int(src)
 	if thres == 0:
 		return 0
 	elif thres == 1:
-		tar.append(int(src))
+		tar.append(src)
 		return 1
 	else:
 		g = gauss(val,thres,stdev)
