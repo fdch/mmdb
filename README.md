@@ -211,7 +211,7 @@ This patch can be used to visualize the `JSON` data files (B)
 
 -------------------------------------------------------------------------------
 
-### Image Query
+### Image Query (non-realtime)
 
 ```
 cd bin
@@ -222,7 +222,7 @@ NOTE: This patch is a gui for `src/query.py`.
 
 This patch can be used to:
 
--  perform a query to the `JSON` data base (C) to get indices, based on 
+-  perform a query to the `JSON` database (C) to get indices, based on 
 -  multiple descriptors (color, brightness, smoothness, blobiness, etc.), 
 -  visualize the queries for live editing with the `sh display` program
 
@@ -230,15 +230,10 @@ Both input query and its results are stored on `JSON` files for later use.
 
 
 
-
--------------------------------------------------------------------------------
-
-
--------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
 	
-## TODO
+## To do
 
 - implement continuity for images (using histogram clusters)
 - filters of type `NOT` in `query.py`
