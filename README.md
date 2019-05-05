@@ -194,7 +194,7 @@ Run on three separate terminals:
 | kontrastedness        | Irregularity                        |
 
 
-(\*) Not used in the query
+(\*) Not used in the audio query
 
 
 ## Extra
