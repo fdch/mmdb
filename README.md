@@ -95,7 +95,7 @@ the sorted inidices of each image filename.
 
 Obtain a sound database based on image colors. This is broken down in four steps: 
 
-#### 1. Get color words:
+#### 5.1. Get color words:
 
 `python src/colors.py`
 
@@ -107,7 +107,7 @@ This script gets English names of the clustered colors in the `JSON` data base (
 - `idlist`: has all the image ids that have that color
 - `words`: has nouns related to such color. These nouns are obtained by querying [datamuse](https://datamuse.com), e.g. 'sky, eyes, etc.'
 
-#### 2. Get color sounds:
+#### 5.2. Get color sounds:
 
 The file `./data/colorwords.json` is then used to query [Freesound](https://freesound.org) and download sounds related to all `words` and `name`s using:
 
@@ -117,7 +117,7 @@ The file `./data/colorwords.json` is then used to query [Freesound](https://free
 NOTE: some colors may not result in words that have a related sound to them.
 
 
-#### 3. Concatenate sounds:
+#### 5.3. Concatenate sounds:
 
 Concatenate color sounds into same files and name the file with the image id:
 
@@ -130,44 +130,7 @@ This script runs `ffprobe` to ignore files that might not be audio, or that migh
 -------------------------------------------------------------------------------
 
 
-
-
-### 6. Reader 
-
-```
-cd bin
-pd reader.pd
-```
-This patch can be used to visualize the `JSON` data files (B)
-
-
-
--------------------------------------------------------------------------------
-
-### 7. Query
-
-```
-cd bin
-pd query.pd
-```
-
-NOTE: This patch is a gui for `src/query.py`.
-
-This patch can be used to:
-
--  perform a query to the `JSON` data base (C) to get indices, based on 
--  multiple descriptors (color, brightness, smoothness, blobiness, etc.), 
--  visualize the queries for live editing with the `sh display` program
-
-Both input query and its results are stored on `JSON` files for later use.
-
-
-
--------------------------------------------------------------------------------
-
-
-
-### 8. Analyze Sounds
+### 6. Analyze Sounds
 
 `sh analyze_sounds.sh`
 
@@ -200,18 +163,21 @@ The default analysis window size is 4096, so in one second of file at 44100, you
 -------------------------------------------------------------------------------
 
 
+### 7. Live Query
+
+This enables you to perform live queries to both images and audio simultaneously, using the same query parameters and a matching matrix.
+
+#### Instructions to open this patch:
+
+Run on three separate terminals:
+
+1. ``sh audio`` (for the sounds)
+2. ``sh display`` (for the images)
+3. Run the live database: ``python src/live_query.py ./txt/images-entries.txt ./data/images-data.json ./data/audio-data.json ./data/colorwords.json 5011 localhost``
+4. Now open `live_query.pd`
 
 
-### 9. Match image with audio
-
-#### Matching query
-
-```
-cd bin
-pd matching_query.pd
-```
-
-This is like `query.pd` and `query.py` but uses `matching_query.py`. The same query is applied to images first, then from the results (intersection if any, or union) we get the related color words and their respective audio databases to perform the *same* query, that is, with the same input parameters. For this, we use the following **matching matrix**:
+#### Matching matrix
 
 | Image Feature         | Audio Feature                       |
 | --------------------- | ----------------------------------- |
@@ -231,17 +197,47 @@ This is like `query.pd` and `query.py` but uses `matching_query.py`. The same qu
 (\*) Not used in the query
 
 
+## Extra
+
+### Reader / Visualizer
+
+```
+cd bin
+pd reader.pd
+```
+This patch can be used to visualize the `JSON` data files (B)
 
 
 
+-------------------------------------------------------------------------------
+
+### Image Query
+
+```
+cd bin
+pd query.pd
+```
+
+NOTE: This patch is a gui for `src/query.py`.
+
+This patch can be used to:
+
+-  perform a query to the `JSON` data base (C) to get indices, based on 
+-  multiple descriptors (color, brightness, smoothness, blobiness, etc.), 
+-  visualize the queries for live editing with the `sh display` program
+
+Both input query and its results are stored on `JSON` files for later use.
 
 
 
 
 -------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-
+	
 ## TODO
 
 - implement continuity for images (using histogram clusters)
