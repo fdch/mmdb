@@ -24,3 +24,5 @@ vid
 .DS_Store
 
 *-data
+
+*.pd_darwin

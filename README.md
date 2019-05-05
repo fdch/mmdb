@@ -4,8 +4,6 @@
 
 
 
-
-
 ## Steps
 
 
@@ -232,6 +230,30 @@ Both input query and its results are stored on `JSON` files for later use.
 
 -------------------------------------------------------------------------------
 
+## Dependencies
+
+### Externals
+
+I have not included binaries within this repo, but you can download the following externals:
+
+Available via `deken`:
+ 
+- Gem
+- pix_opencv
+- purest_json
+- ggee
+- timbreID
+- zexy/repack
+
+Available via github:
+
+- [fd_lib](https://github.com/fdch/fd_lib) for [iterate], [counter]
+
+### Abstractions
+
+In the `bin/lib` directory there are some abstractions made for this repo (prepended with a `_`. I also have included these together with some other abstractions as well in the `pdbin` directory that are taken from [fd_lib](https://github.com/fdch/fd_lib) and other places. `pdbin` might not be necessary if you have already installed all the external libraries mentioned above. NOTE: the `pdbin` directory is not necessary to load the patches, it is just placed there for convenience. Just declare it with `[declare -path ../pdbin]` if you need to use it.
+
+-------------------------------------------------------------------------------
 	
 ## To do
 
