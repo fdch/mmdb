@@ -1,4 +1,4 @@
-#N canvas 823 0 457 511 10;
+#N canvas 717 30 457 511 10;
 #X declare -path purest_json -path ggee -path ./lib -lib timbreIDLib
 ;
 #N canvas 247 249 837 438 netsend 0;
@@ -104,6 +104,9 @@
 #X obj 625 216 route begin_parse end_parse;
 #X obj 627 312 list prepend index;
 #X obj 700 173 list trim;
+#X obj 525 312 r to_display;
+#X obj 525 334 list prepend send;
+#X obj 525 356 list trim;
 #X connect 0 0 1 0;
 #X connect 1 0 31 0;
 #X connect 2 0 1 0;
@@ -164,6 +167,9 @@
 #X connect 50 1 41 0;
 #X connect 51 0 44 0;
 #X connect 52 0 50 0;
+#X connect 53 0 54 0;
+#X connect 54 0 55 0;
+#X connect 55 0 1 0;
 #X restore 33 225 pd netsend to display;
 #X text 174 226 <-- connect and play images in display;
 #N canvas 311 171 638 401 parameters 0;
@@ -609,7 +615,7 @@ add maxKeyPoints \$3 \; params add maxSkewAngle \$4;
 #X msg 166 232 \; fields 10;
 #X obj 272 13 r index-set;
 #X obj 272 35 t b a;
-#X msg 272 57 500;
+#X msg 272 57 27;
 #X msg 272 79 \; timeline-set set \$1;
 #X connect 0 0 1 0;
 #X connect 2 0 3 0;
@@ -641,34 +647,34 @@ timbreIDLib;
 #X obj 35 61 cnv 15 100 30 empty empty empty 20 12 0 14 -204786 -66577
 0;
 #X text 145 68 <-- open;
-#N canvas 697 31 567 553 controls 1;
+#N canvas 175 0 1105 778 controls 0;
 #N canvas 369 0 896 697 parameters 0;
 #X obj 130 109 hsl 128 30 0 127 0 0 thres_R thres_R-set thres_R -2
-8 0 10 -258113 -262144 -1 500 1;
+8 0 10 -258113 -262144 -1 10160 1;
 #X obj 130 143 hsl 128 30 0 127 0 0 thres_G thres_G-set thres_G -2
-8 0 10 -4034 -262144 -1 1300 1;
+8 0 10 -4034 -262144 -1 3810 1;
 #X obj 130 177 hsl 128 30 0 127 0 0 thres_B thres_B-set thres_B -2
-8 0 10 -4160 -204800 -204800 800 1;
+8 0 10 -4160 -204800 -204800 6350 1;
 #X obj 130 211 hsl 128 30 0 127 0 0 thres_C thres_C-set thres_C -2
-8 0 10 -232576 -262144 -159808 0 1;
+8 0 10 -232576 -262144 -159808 5080 1;
 #X obj 130 245 hsl 128 30 0 127 0 0 brightness brightness-set brightness
--2 8 0 10 -262130 -1 -1 0 1;
+-2 8 0 10 -262130 -1 -1 8890 1;
 #X obj 130 279 hsl 128 30 0 127 0 0 bodies bodies-set bodies -2 8 0
-10 -83269 -257985 -262130 0 1;
+10 -83269 -257985 -262130 1016 1;
 #X obj 130 313 hsl 128 30 0 127 0 0 faces faces-set faces -2 8 0 10
--83269 -257985 -262130 0 1;
+-83269 -257985 -262130 889 1;
 #X obj 130 347 hsl 128 30 0 127 0 0 smoothness smoothness-set smoothness
--2 8 0 10 -13330 -4032 -204800 0 1;
+-2 8 0 10 -13330 -4032 -204800 10160 1;
 #X obj 130 381 hsl 128 30 0 127 0 0 cutness cutness-set cutness -2
-8 0 10 -204800 -13330 -13330 0 1;
+8 0 10 -204800 -13330 -13330 2540 1;
 #X obj 130 415 hsl 128 30 0 127 0 0 blobiness blobiness-set blobiness
--2 8 0 10 -16662 -4032 -203904 0 1;
+-2 8 0 10 -16662 -4032 -203904 12319 1;
 #X obj 130 449 hsl 128 30 0 127 0 0 skewness skewness-set skewness
--2 8 0 10 -45076 -159808 -232576 0 1;
+-2 8 0 10 -45076 -159808 -232576 1270 1;
 #X obj 130 483 hsl 128 30 0 127 0 0 boundedness boundedness-set boundedness
--2 8 0 10 -86277 -258113 -261234 0 1;
+-2 8 0 10 -86277 -258113 -261234 12700 1;
 #X obj 130 517 hsl 128 30 0 127 0 0 kontrastedness kontrastedness-set
-kontrastedness -2 8 0 10 -86853 -260097 -261682 0 1;
+kontrastedness -2 8 0 10 -86853 -260097 -261682 2540 1;
 #X obj 109 109 tgl 15 0 thres_R-bool thres_R-bool-set empty 17 7 0
 10 -262144 -1 -1 0 1;
 #X obj 109 143 tgl 15 0 thres_G-bool thres_G-bool-set empty 17 7 0
@@ -700,35 +706,35 @@ empty 17 7 0 10 -262144 -1 -1 0 1;
 #X obj 114 551 tgl 10 0 global-bool global-bool-set empty 17 7 0 10
 -262144 -1 -1 0 1;
 #X obj 265 110 nbx 5 14 -1e+37 1e+37 0 0 empty thres_R empty 0 -8 0
-10 -262144 -1 -1 5 256;
+10 -262144 -1 -1 101.6 256;
 #X obj 265 144 nbx 5 14 -1e+37 1e+37 0 0 empty thres_G empty 0 -8 0
-10 -262144 -1 -1 13 256;
+10 -262144 -1 -1 38.1 256;
 #X obj 265 178 nbx 5 14 -1e+37 1e+37 0 0 empty thres_B empty 0 -8 0
-10 -262144 -1 -1 8 256;
+10 -262144 -1 -1 63.5 256;
 #X obj 265 212 nbx 5 14 -1e+37 1e+37 0 0 empty thres_C empty 0 -8 0
-10 -262144 -1 -1 0 256;
+10 -262144 -1 -1 50.8 256;
 #X obj 265 246 nbx 5 14 -1e+37 1e+37 0 0 empty brightness empty 0 -8
-0 10 -262144 -1 -1 0 256;
+0 10 -262144 -1 -1 88.9 256;
 #X obj 265 280 nbx 5 14 -1e+37 1e+37 0 0 empty bodies empty 0 -8 0
-10 -262144 -1 -1 0 256;
+10 -262144 -1 -1 10.16 256;
 #X obj 265 314 nbx 5 14 -1e+37 1e+37 0 0 empty faces empty 0 -8 0 10
--262144 -1 -1 0 256;
+-262144 -1 -1 8.89 256;
 #X obj 265 348 nbx 5 14 -1e+37 1e+37 0 0 empty smoothness empty 0 -8
-0 10 -262144 -1 -1 0 256;
+0 10 -262144 -1 -1 101.6 256;
 #X obj 265 382 nbx 5 14 -1e+37 1e+37 0 0 empty cutness empty 0 -8 0
-10 -262144 -1 -1 0 256;
+10 -262144 -1 -1 25.4 256;
 #X obj 265 416 nbx 5 14 -1e+37 1e+37 0 0 empty blobiness empty 0 -8
-0 10 -262144 -1 -1 0 256;
+0 10 -262144 -1 -1 123.19 256;
 #X obj 265 450 nbx 5 14 -1e+37 1e+37 0 0 empty skewness empty 0 -8
-0 10 -262144 -1 -1 0 256;
+0 10 -262144 -1 -1 12.7 256;
 #X obj 265 484 nbx 5 14 -1e+37 1e+37 0 0 empty boundedness empty 0
--8 0 10 -262144 -1 -1 0 256;
+-8 0 10 -262144 -1 -1 165.1 256;
 #X obj 265 518 nbx 5 14 -1e+37 1e+37 0 0 empty kontrastedness empty
-0 -8 0 10 -262144 -1 -1 0 256;
+0 -8 0 10 -262144 -1 -1 25.4 256;
 #X obj 332 411 cnv 15 300 100 empty empty fsort_(field_sort) 10 10
 0 14 -204786 -1 0;
 #X obj 341 444 vradio 15 1 0 3 lin_rev_scr lin_rev_scr-set lin_rev_scr
-0 -8 0 10 -262144 -1 -1 2;
+0 -8 0 10 -262144 -1 -1 0;
 #X obj 363 461 hradio 15 1 0 7 fields fields-set fields 0 -8 0 10 -262144
 -1 -1 0;
 #X obj 478 417 bng 15 250 50 0 bodies_and_faces bodies_and_faces-set
@@ -748,21 +754,21 @@ blobs_and_keypoints 17 7 0 10 -262144 -1 -1;
 #X obj 487 564 tgl 15 0 play play-set play 17 7 0 10 -262144 -1 -1
 0 1;
 #X obj 570 563 nbx 5 14 -1e+37 1e+37 0 0 index index-set index 0 -8
-0 10 -262144 -1 -1 500 256;
+0 10 -262144 -1 -1 27 256;
 #X obj 487 539 tgl 15 0 render render-set render 17 7 0 10 -262144
 -1 -1 0 1;
 #X obj 362 590 hsl 260 10 0 590 0 0 timeline timeline-set timeline
--2 -8 0 10 -204800 -1 -1 21949 1;
+-2 -8 0 10 -204800 -1 -1 1185 1;
 #X obj 570 532 nbx 5 14 1 100 0 0 fps fps-set fps 0 -8 0 10 -262144
--1 -1 27 256;
+-1 -1 8 256;
 #X obj 332 307 cnv 15 300 100 empty empty choose_query_or_sort_type
 10 10 0 14 -262130 -1 0;
 #X obj 443 381 nbx 5 14 -1e+37 1e+37 0 0 \$0-inter \$0-inter-len intersections_found
-0 -8 0 10 -262144 -1 -1 385 256;
+0 -8 0 10 -262144 -1 -1 0 256;
 #X obj 443 348 nbx 5 14 -1e+37 1e+37 0 0 \$0-union \$0-union-len unions_found
-0 -8 0 10 -262144 -1 -1 468 256;
+0 -8 0 10 -262144 -1 -1 0 256;
 #X obj 344 339 hradio 30 1 0 3 choose_type choose_type-set union_inter_fsort
-0 -8 0 10 -262144 -1 -1 1;
+0 -8 0 10 -262144 -1 -1 2;
 #X symbolatom 343 382 0 0 0 2 using: sort_array -;
 #X text 507 379 <-- use few filters!;
 #X obj 332 101 cnv 15 300 100 empty empty write_and_make_query 10 10
@@ -789,12 +795,12 @@ read_parameter_file;
 read_results_file;
 #X obj 530 273 bng 10 250 50 0 load_results load_results-set load_results
 13 5 0 10 -203904 -1 -1;
-#X obj 362 604 hsl 260 8 0 385 0 0 index_timeline index_timeline-set
-empty -2 -8 0 10 -204800 -1 -1 13925 1;
+#X obj 362 604 hsl 260 8 0 590 0 0 index_timeline index_timeline-set
+empty -2 -8 0 10 -204800 -1 -1 0 1;
 #X obj 340 592 bng 15 250 50 0 reset_index reset_index-set empty 17
 7 0 10 -261682 -1 -1;
 #X obj 527 564 tgl 15 0 randomize randomize-set rand 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 427 544 bng 10 250 50 0 kill_display kill_display-set kill_display
 14 5 0 8 -261234 -1 -1;
 #X obj 344 541 bng 15 250 50 0 start_display start_display-set start_display
@@ -824,7 +830,6 @@ disconnect 10 5 0 8 -261234 -1 -1;
 #X restore 43 68 pd controls;
 #N canvas 567 36 521 379 netsend 0;
 #X obj 29 30 r connect;
-#X msg 29 52 connect localhost 5002;
 #X obj 29 194 netsend;
 #X obj 29 216 print netsend_audio;
 #X obj 52 118 r to_audio;
@@ -860,23 +865,24 @@ disconnect 10 5 0 8 -261234 -1 -1;
 #X obj 146 323 s;
 #X obj 185 78 r disconnect;
 #X msg 185 100 disconnect;
-#X connect 0 0 1 0;
+#X msg 29 52 connect localhost 5012;
+#X connect 0 0 18 0;
 #X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X connect 2 1 11 0;
+#X connect 1 1 10 0;
+#X connect 3 0 4 0;
 #X connect 4 0 5 0;
-#X connect 5 0 6 0;
-#X connect 6 0 2 0;
+#X connect 5 0 1 0;
+#X connect 7 0 8 0;
 #X connect 8 0 9 0;
-#X connect 9 0 10 0;
-#X connect 11 0 12 0;
-#X connect 11 1 13 0;
-#X connect 12 1 15 0;
-#X connect 13 0 14 0;
-#X connect 14 0 16 1;
-#X connect 15 0 16 0;
-#X connect 17 0 18 0;
-#X connect 18 0 2 0;
+#X connect 10 0 11 0;
+#X connect 10 1 12 0;
+#X connect 11 1 14 0;
+#X connect 12 0 13 0;
+#X connect 13 0 15 1;
+#X connect 14 0 15 0;
+#X connect 16 0 17 0;
+#X connect 17 0 1 0;
+#X connect 18 0 1 0;
 #X restore 35 247 pd netsend to audio;
 #X text 179 246 <-- connect and play audio files;
 #N canvas 298 12 731 729 live 0;
@@ -1263,4 +1269,7 @@ disconnect 10 5 0 8 -261234 -1 -1;
 #X restore 152 297 pd color_words;
 #X obj 142 352 r loaded_sounds;
 #X obj 142 374 print;
+#X msg 250 392 \; to_audio list tester bang;
+#X msg 180 429 \; to_display netreceive listen 0 \; to_audio netreceive
+listen 0;
 #X connect 19 0 20 0;
