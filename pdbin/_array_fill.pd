@@ -1,0 +1,18 @@
+#N canvas 0 22 450 300 10;
+#X obj 87 106 t a a;
+#X obj 161 120 list length;
+#X obj 87 55 inlet;
+#X obj 172 209 array size \$1;
+#X obj 45 214 array set \$1;
+#X obj 269 34 loadbang;
+#X obj 269 55 array size \$1;
+#X text 251 72 check if array exists...;
+#X obj 166 164 t f f;
+#X obj 280 264 outlet;
+#X connect 0 0 4 0;
+#X connect 0 1 1 0;
+#X connect 1 0 8 0;
+#X connect 2 0 0 0;
+#X connect 5 0 6 0;
+#X connect 8 0 3 0;
+#X connect 8 1 9 0;
