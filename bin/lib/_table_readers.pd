@@ -1,0 +1,6 @@
+#N canvas 0 22 450 300 10;
+#X obj 76 124 clone _grain_player 32;
+#X obj 78 25 inlet;
+#X obj 76 211 outlet~;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;

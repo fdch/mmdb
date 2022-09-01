@@ -1,0 +1,11 @@
+#N canvas 0 22 450 300 10;
+#X obj 126 113 r d_laplace;
+#X obj 110 166 pix_opencv_laplace;
+#X obj 126 137 route size;
+#X obj 113 53 inlet;
+#X obj 110 187 outlet;
+#X connect 0 0 2 0;
+#X connect 1 0 4 0;
+#X connect 2 0 1 1;
+#X connect 2 1 1 0;
+#X connect 3 0 1 0;

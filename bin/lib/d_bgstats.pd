@@ -1,0 +1,14 @@
+#N canvas 0 22 450 300 10;
+#X obj 73 162 pix_opencv_bgstats;
+#X msg 72 117 reset;
+#X text 137 139 reset the background;
+#X obj 73 67 r d_bgstats;
+#X obj 73 91 route reset;
+#X obj 39 21 inlet;
+#X obj 73 183 outlet;
+#X connect 0 0 6 0;
+#X connect 1 0 0 0;
+#X connect 3 0 4 0;
+#X connect 4 0 1 0;
+#X connect 4 1 0 0;
+#X connect 5 0 0 0;

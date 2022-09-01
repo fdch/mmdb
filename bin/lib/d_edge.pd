@@ -1,0 +1,11 @@
+#N canvas 0 22 450 300 10;
+#X obj 88 200 pix_opencv_edge;
+#X obj 99 139 r d_edge;
+#X obj 99 163 route thres;
+#X obj 80 34 inlet;
+#X obj 72 267 outlet;
+#X connect 0 0 4 0;
+#X connect 1 0 2 0;
+#X connect 2 0 0 1;
+#X connect 2 1 0 0;
+#X connect 3 0 0 0;
