@@ -1,0 +1,53 @@
+extract image frames from video file
+
+	ffmpeg -i "$i" -f "${IMGFMT}" -vf "scale=$WIDTH:-1" -start_number 0 "${VID}/${fn}-%d.${EXT}" -f "${AUDEXT}" -vn "${AUD}/${fn}.${AUDEXT}"
+
+convert, resiz, and rename filenames of incoming image array
+
+	sips -s format "$FORMAT" --resampleWidth "$WIDTH" "$i" --out "$fn"
+
+analyze images
+
+	pd -batch -send "params...; roiflag $f; analyze list $files $count $target; " -open analyze.pd
+
+sort images
+
+	sort ${f} "${TEXT}.txt" | cut -f 1 -d ' ' > "${tmp}"
+
+get color names 
+
+	python src/colors.py
+
+get color sounds
+
+	python src/fs_download.py
+
+concatenate sounds
+
+	python src/concat_sounds.py
+
+analyze sounds
+
+	pd -batch  -send ";automator 1; data_dir ...; load_sounds ..."  -open analyze_sounds.pd
+
+make audio database
+
+	python src/make_audio_db.py timid_files_directory audio-data.json
+
+run live query
+
+	pd -open analyze_sounds.pd
+	pd -nougi -send ";pix_multiimage open images/i-*.jpg 500;gemwin create, 1" -open netread.pd
+	python src/live_query.py ./txt/images-entries.txt ./data/images-data.json ./data/audio-data.json ./data/colorwords.json 5011 localhost
+	pd -open live_query.pd
+
+visualizer
+
+	pd reader.pd
+
+query
+
+	pd query.pd
+
+
+add image fft data and its spectral analysis as features to analyze.pd
