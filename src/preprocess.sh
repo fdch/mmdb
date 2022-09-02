@@ -93,7 +93,23 @@ function convert_videos()
 
 }
 
-grab_names $RAW
+GRABDIR=$RAW
+
+if [[ $1 ]] && [[ -d $1 ]]
+then
+	echo "Getting names from $1"
+	GRABDIR=$1
+else
+	echo "Getting names from raw directory (default)"
+fi
+
+read -p "Do you wish to continue? y/n (y)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Nn]$ ]]
+then
+	exit
+fi
+
 
 echo "original,converted" > $LOG/conversion.csv
 
