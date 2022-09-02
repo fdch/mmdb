@@ -1,0 +1,12 @@
+#N canvas 0 22 450 300 10;
+#X obj 59 157 _array_fill \$2-\$1;
+#X obj 59 97 f \$1;
+#X obj 61 210 array define \$2-\$1;
+#X obj 59 37 r _sort_to_array;
+#X obj 59 131 text get -s text t;
+#X obj 61 68 t b p;
+#X connect 1 0 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 0 0;
+#X connect 5 0 1 0;
+#X connect 5 1 4 3;
